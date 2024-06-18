@@ -2,15 +2,15 @@
 #   pg_data:
 
 services:
-  books:
+  api-books:
     build:
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
       context: ./
     volumes:
       - ./:/app
     ports:
       - "3000:3000"
-
+      
   db:
     image: postgres
     ports:
