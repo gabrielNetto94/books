@@ -1,7 +1,7 @@
-package book
+package domain
 
 type Book struct {
-	Id     int    `json:"id" gorm:"primaryKey"`
+	Id     string `json:"id" gorm:"primaryKey"`
 	Title  string `json:"title"`
 	Author string `json:"author"`
 	Desc   string `json:"desc"`

@@ -1,8 +1,10 @@
 package main
 
 import (
-	"books/models/book"
-	"books/routes"
+	"books/internal/core/domain"
+	bookrepository "books/internal/core/repositories/book"
+	"books/internal/core/services"
+	"fmt"
 	"log"
 
 	"gorm.io/driver/postgres"
@@ -10,7 +12,8 @@ import (
 )
 
 func connectDatabase() *gorm.DB {
-	dbURL := "postgres://postgres:password@db:5432?sslmode=disable"
+
+	dbURL := "postgres://postgres:password@localhost/postgres?sslmode=disable"
 
 	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 
@@ -18,72 +21,26 @@ func connectDatabase() *gorm.DB {
 		log.Fatalln("err:", err.Error())
 	}
 
-	db.AutoMigrate(&book.Book{})
+	db.AutoMigrate(&domain.Book{})
 
 	return db
 }
 
 func main() {
 
-	routes.InitRoutes().Run(":3000")
+	db := connectDatabase()
 
-	// db := connectDatabase()
+	// routes.InitRoutes().Run(":3000")
 
-	// router.GET("/books", func(ctx *gin.Context) {
+	repo := bookrepository.NewBookRepository(db)
+	book := services.NewBookService(repo)
 
-	// 	var books []models.Book
-	// 	res := db.Find(&books)
-
-	// 	if res.Error != nil {
-	// 		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-	// 			ctx.JSON(404, gin.H{"message": res.Error.Error()})
-	// 			return
-	// 		}
-	// 		ctx.JSON(500, gin.H{"error": res.Error.Error()})
-	// 		return
-	// 	}
-	// 	ctx.JSON(200, books)
-	// })
-
-	// router.GET("/books/:id", func(ctx *gin.Context) {
-
-	// 	id := ctx.Param("id")
-	// 	var user models.Book
-	// 	res := db.First(&user, id)
-
-	// 	if res.Error != nil {
-	// 		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-	// 			ctx.JSON(404, gin.H{"message": res.Error.Error()})
-	// 			return
-
-	// 		}
-	// 		ctx.JSON(500, gin.H{"error": res.Error.Error()})
-	// 		return
-	// 	}
-	// 	ctx.JSON(200, user)
-	// })
-
-	// router.POST("/book", func(ctx *gin.Context) {
-
-	// 	var req models.Book
-	// 	if err := ctx.BindJSON(&req); err != nil {
-	// 		ctx.JSON(400, gin.H{"error": err.Error()})
-	// 		return
-	// 	}
-
-	// 	res := db.Create(&models.Book{
-	// 		Title:  req.Title,
-	// 		Author: req.Author,
-	// 		Desc:   req.Desc,
-	// 	})
-	// 	if res.Error != nil {
-	// 		ctx.JSON(400, gin.H{
-	// 			"error": res.Error.Error(),
-	// 		})
-	// 		return
-	// 	}
-
-	// 	ctx.JSON(200, res.RowsAffected)
-	// })
-
+	err := book.CreateBook(domain.Book{
+		Title:  "Title book",
+		Author: "Gabriel",
+		Desc:   "An awesome book",
+	})
+	if err != nil {
+		fmt.Printf("err: %v\n", err)
+	}
 }
