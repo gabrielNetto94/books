@@ -16,23 +16,22 @@ func NewBookRepository(db *gorm.DB) *UserRepositoryImpl {
 
 type Bookrepository interface {
 	Save(book domain.Book) error
-	// FindById(id string) (*domain.Book, error)
-	// ListAll() ([]*domain.Book, error)
+	FindById(id string) (domain.Book, error)
+	ListAll() ([]domain.Book, error)
 }
 
 func (s *UserRepositoryImpl) Save(book domain.Book) error {
 	return s.db.Create(book).Error
 }
 
-// func (s *UserRepositoryImpl) FindById(id string) (*domain.Book, error) {
+func (s *UserRepositoryImpl) FindById(id string) (domain.Book, error) {
+	var book = domain.Book{Id: id}
+	return book, s.db.Find(&book).Error
+}
 
-// 	return &domain.Book{Id: "asd", Title: "asdf"}, nil
-// }
+func (s *UserRepositoryImpl) ListAll() ([]domain.Book, error) {
 
-// func (s *UserRepositoryImpl) ListAll() ([]*domain.Book, error) {
+	var books []domain.Book
 
-// 	return []*domain.Book{
-// 		{Id: "ASF13asda", Title: "asdf 1"},
-// 		{Id: "ASF13asda", Title: "asdf 2"},
-// 	}, nil
-// }
+	return books, s.db.Find(&books).Error
+}

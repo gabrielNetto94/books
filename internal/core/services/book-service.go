@@ -17,16 +17,15 @@ func NewBookService(repo bookrepository.Bookrepository) *BookService {
 	}
 }
 
-// func (s *BookService) GetBook(bookId string) (*domain.Book, error) {
-// 	fmt.Println("lógica lusitana para buscar os dados")
-// 	return s.repo.FindById(bookId)
-// }
+func (s *BookService) FindById(bookId string) (domain.Book, error) {
+	return s.repo.FindById(bookId)
+}
 
 func (s *BookService) CreateBook(book domain.Book) error {
 	book.Id = uuid.New().String()
 	return s.repo.Save(book)
 }
 
-// Save(book domain.Book) error
-// FindById(id string) (*domain.Book, error)
-// ListAll() ([]*domain.Book, error)
+func (s *BookService) ListAll() ([]domain.Book, error) {
+	return s.repo.ListAll()
+}
