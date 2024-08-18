@@ -2,6 +2,7 @@ package db
 
 import (
 	"books/internal/core/domain"
+	"books/internal/pkg/env"
 	"log"
 
 	"gorm.io/driver/postgres"
@@ -10,7 +11,7 @@ import (
 
 func ConnectDatabase() *gorm.DB {
 
-	dbURL := "postgres://postgres:password@localhost/postgres?sslmode=disable"
+	dbURL := env.GetVariable("DATABASE_URL")
 
 	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 
