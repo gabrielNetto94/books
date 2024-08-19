@@ -21,7 +21,8 @@ func CreateBook(ctx *gin.Context) {
 	ctx.BindJSON(&book)
 	err := bookService.CreateBook(book)
 	if err != nil {
-		httpreponse.InternalServerError()
+		httpreponse.InternalServerError(ctx.Writer, httpreponse.InternalError{Message: "Error on create book", Error: err})
+		return
 	}
 
 	ctx.Status(http.StatusNoContent)

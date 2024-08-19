@@ -1,6 +1,7 @@
 package bookshandler
 
 import (
+	httpreponse "books/internal/adapters/rest/http-reponse"
 	bookrepository "books/internal/core/repositories/book"
 	"books/internal/core/repositories/db"
 	"books/internal/core/services"
@@ -16,7 +17,8 @@ func ListBooks(ctx *gin.Context) {
 
 	books, err := bookService.ListAll()
 	if err != nil {
-		ctx.JSON(500, err.Error())
+		httpreponse.InternalServerError(ctx.Writer, httpreponse.InternalError{Message: "Error on create book", Error: err})
+		return
 	}
 
 	ctx.JSON(200, books)
