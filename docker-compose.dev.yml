@@ -10,6 +10,9 @@ services:
       - ./:/app
     ports:
       - "3000:3000"
+    depends_on:
+      - db
+      - cache
       
   db:
     image: postgres
@@ -19,3 +22,8 @@ services:
       - POSTGRES_PASSWORD=password
       - POSTGRES_USER=postgres
       - POSTGRES_HOST_AUTH_METHOD=trust
+
+  cache:
+    image: redis:latest
+    ports:
+      - "6379:6379"

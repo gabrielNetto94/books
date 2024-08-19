@@ -1,9 +1,15 @@
 package main
 
-import "books/internal/adapters/rest/routes"
+import (
+	"fmt"
+	"time"
+)
 
 func main() {
 
-	routes.InitRoutes().Run(":3000")
+	// https://github.dev/sergicanet9/go-hexagonal-api
+
+	fmt.Println(time.Now().UTC())
+	// routes.InitRoutes().Run(":3000")
 
 }
