@@ -1,21 +1,16 @@
-package bookshandler
+package bookhandler
 
 import (
 	httpreponse "books/internal/adapters/rest/http-reponse"
-	bookrepository "books/internal/core/repositories/book"
-	"books/internal/core/repositories/db"
-	"books/internal/core/services"
 
 	"github.com/gin-gonic/gin"
 )
 
-func ListBooks(ctx *gin.Context) {
-	db := db.ConnectDatabase()
+func (b BookHandlers) ListBooks(ctx *gin.Context) {
 
-	repo := bookrepository.NewBookRepository(db)
-	bookService := services.NewBookService(repo)
+	b.service.ListAll()
 
-	books, err := bookService.ListAll()
+	books, err := b.service.ListAll()
 	if err != nil {
 		httpreponse.InternalServerError(ctx.Writer, httpreponse.InternalError{Message: "Error on create book", Error: err})
 		return

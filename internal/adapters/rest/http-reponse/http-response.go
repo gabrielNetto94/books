@@ -15,7 +15,16 @@ type InternalError struct {
 	Error   error
 }
 
-// @todo finish
+func BadRequest(w http.ResponseWriter, message string) {
+	w.WriteHeader(http.StatusBadRequest)
+	w.Header().Set("Content-Type", "application/json")
+
+	err, _ := json.Marshal(map[string]string{
+		"message": message,
+	})
+	w.Write(err)
+}
+
 func InternalServerError(w http.ResponseWriter, internalErr InternalError) {
 	w.WriteHeader(http.StatusInternalServerError)
 	w.Header().Set("Content-Type", "application/json")

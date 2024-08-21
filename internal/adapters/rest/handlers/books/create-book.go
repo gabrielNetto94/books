@@ -1,25 +1,27 @@
-package bookshandler
+package bookhandler
 
 import (
 	httpreponse "books/internal/adapters/rest/http-reponse"
 	"books/internal/core/domain"
-	bookrepository "books/internal/core/repositories/book"
-	"books/internal/core/repositories/db"
-	"books/internal/core/services"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func CreateBook(ctx *gin.Context) {
-	db := db.ConnectDatabase()
-
-	repo := bookrepository.NewBookRepository(db)
-	bookService := services.NewBookService(repo)
+func (b BookHandlers) CreateBook(ctx *gin.Context) {
 
 	var book domain.Book
-	ctx.BindJSON(&book)
-	err := bookService.CreateBook(book)
+	if err := ctx.BindJSON(&book); err != nil {
+		httpreponse.BadRequest(ctx.Writer, "Invalid request")
+		return
+	}
+	if err := book.Validate(); err != nil {
+
+		httpreponse.BadRequest(ctx.Writer, err.Error())
+		return
+
+	}
+	err := b.service.CreateBook(book)
 	if err != nil {
 		httpreponse.InternalServerError(ctx.Writer, httpreponse.InternalError{Message: "Error on create book", Error: err})
 		return
