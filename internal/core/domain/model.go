@@ -12,6 +12,13 @@ type Book struct {
 	Desc   string `json:"desc"`
 }
 
+// @todo verificar se mantém model separada para cada domínio
+type BookError struct {
+	Message string `json:"message"`
+	Code    string `json:"code"`
+	Error   error  `json:"error,omitempty"`
+}
+
 func (b Book) Validate() (err error) {
 
 	var errStrings []string
