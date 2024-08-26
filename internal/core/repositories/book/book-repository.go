@@ -2,16 +2,19 @@ package bookrepository
 
 import (
 	"books/internal/core/domain"
+	"books/internal/core/repositories/cache"
+	"encoding/json"
 
 	"gorm.io/gorm"
 )
 
 type UserRepositoryImpl struct {
-	db *gorm.DB
+	db    *gorm.DB
+	cache *cache.CacheRepository
 }
 
-func NewBookRepository(db *gorm.DB) *UserRepositoryImpl {
-	return &UserRepositoryImpl{db}
+func NewBookRepository(db *gorm.DB, cache *cache.CacheRepository) *UserRepositoryImpl {
+	return &UserRepositoryImpl{db, cache}
 }
 
 type Bookrepository interface {
@@ -26,7 +29,21 @@ func (s *UserRepositoryImpl) Save(book domain.Book) error {
 
 func (s *UserRepositoryImpl) FindById(id string) (domain.Book, error) {
 	var book = domain.Book{Id: id}
-	return book, s.db.Find(&book).Error
+	err := s.cache.GetObject(id, &book)
+	if err == nil {
+		return book, nil
+	}
+	resp := s.db.Find(&book)
+	bookBytes, err := json.Marshal(book)
+	if err == nil {
+
+		_ = s.cache.Set(book.Id, bookBytes)
+		// if err := s.cache.Set(book.Id, asd); err != nil {
+		// 	// fmt.Println("err save cache:", err.Error())
+		// }
+	}
+
+	return book, resp.Error
 }
 
 func (s *UserRepositoryImpl) ListAll() ([]domain.Book, error) {
