@@ -21,10 +21,22 @@ type Bookrepository interface {
 	Save(book domain.Book) error
 	FindById(id string) (domain.Book, error)
 	ListAll() ([]domain.Book, error)
+	Update(book domain.Book) error
 }
 
 func (s *UserRepositoryImpl) Save(book domain.Book) error {
 	return s.db.Create(book).Error
+}
+
+func (s *UserRepositoryImpl) Update(book domain.Book) error {
+
+	err := s.db.Save(book).Error
+	if err == nil {
+		_ = s.cache.Del(book.Id)
+		return nil
+	}
+
+	return err
 }
 
 func (s *UserRepositoryImpl) FindById(id string) (domain.Book, error) {
@@ -36,11 +48,7 @@ func (s *UserRepositoryImpl) FindById(id string) (domain.Book, error) {
 	resp := s.db.Find(&book)
 	bookBytes, err := json.Marshal(book)
 	if err == nil {
-
 		_ = s.cache.Set(book.Id, bookBytes)
-		// if err := s.cache.Set(book.Id, asd); err != nil {
-		// 	// fmt.Println("err save cache:", err.Error())
-		// }
 	}
 
 	return book, resp.Error

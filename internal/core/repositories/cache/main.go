@@ -62,9 +62,10 @@ func (c CacheRepository) GetObject(key string, obj any) error {
 func (c CacheRepository) Set(key string, value any) error {
 
 	var ctx = context.Background()
-	err := c.cache.Set(ctx, key, value, 0).Err()
-	if err != nil {
-		return err
-	}
-	return nil
+	return c.cache.Set(ctx, key, value, 0).Err()
+}
+func (c CacheRepository) Del(key string) error {
+
+	var ctx = context.Background()
+	return c.cache.Del(ctx, key).Err()
 }

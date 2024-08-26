@@ -26,6 +26,10 @@ func (s *BookService) CreateBook(book domain.Book) error {
 	return s.repo.Save(book)
 }
 
+func (s *BookService) UpdateBook(book domain.Book) error {
+	return s.repo.Update(book)
+}
+
 func (s *BookService) ListAll() ([]domain.Book, error) {
 	return s.repo.ListAll()
 }

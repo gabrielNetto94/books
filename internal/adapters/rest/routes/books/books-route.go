@@ -22,6 +22,7 @@ func LoadBooksRoute(router *gin.RouterGroup) *gin.RouterGroup {
 	router.GET("/books", bookHandlers.ListBooks)
 	router.GET("/books/:id", bookHandlers.GetBookById)
 	router.POST("/books", bookHandlers.CreateBook)
+	router.PUT("/books/:id", bookHandlers.UpdateBook)
 
 	return router
 }
