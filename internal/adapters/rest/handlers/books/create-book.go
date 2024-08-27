@@ -17,11 +17,7 @@ func (b BookHandlers) CreateBook(ctx *gin.Context) {
 		return
 	}
 	if bookError := b.service.CreateBook(book); bookError.Error != nil {
-		httpreponse.ErrorResponse(ctx.Writer, httpreponse.ErrorResponseModel{
-			Message: "Error on create book",
-			Error:   bookError.Error,
-			Code:    bookError.Code,
-		})
+		httpreponse.ErrorResponse(ctx.Writer, bookError)
 		return
 	}
 

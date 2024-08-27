@@ -2,6 +2,7 @@ package httpreponse
 
 import (
 	errorscode "books/internal/consts/errors-code"
+	"books/internal/core/domain"
 	"encoding/json"
 	"net/http"
 )
@@ -45,7 +46,7 @@ func InternalServerError(w http.ResponseWriter, internalErr InternalError) {
 	w.Write(err)
 }
 
-func ErrorResponse(w http.ResponseWriter, errResponse ErrorResponseModel) {
+func ErrorResponse(w http.ResponseWriter, errResponse domain.DomainError) {
 
 	statusCode := mapErrorToHTTPStatusCode(errResponse.Code)
 	w.WriteHeader(statusCode)

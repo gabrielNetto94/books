@@ -22,10 +22,10 @@ func (s *BookService) FindById(bookId string) (domain.Book, error) {
 	return s.repo.FindById(bookId)
 }
 
-func (s *BookService) CreateBook(book domain.Book) domain.BookError {
+func (s *BookService) CreateBook(book domain.Book) domain.DomainError {
 
 	if err := book.Validate(); err != nil {
-		return domain.BookError{
+		return domain.DomainError{
 			Message: "book validation failed",
 			Error:   err,
 			Code:    errorscode.ErrInvalidInput,
@@ -34,14 +34,14 @@ func (s *BookService) CreateBook(book domain.Book) domain.BookError {
 
 	book.Id = uuid.New().String()
 	if err := s.repo.Save(book); err != nil {
-		return domain.BookError{
+		return domain.DomainError{
 			Message: "failed to save book",
 			Code:    errorscode.ErrInternalError,
 			Error:   err,
 		}
 	}
 
-	return domain.BookError{}
+	return domain.DomainError{}
 }
 
 func (s *BookService) UpdateBook(book domain.Book) error {

@@ -21,9 +21,11 @@ func NewCacheInstance(cache *redis.Client) *CacheRepository {
 
 func ConnectCache() *CacheRepository {
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     env.GetVariable("CACHE_URL"),
+		Addr: env.GetVariable("CACHE_URL"),
+		//@todo passar para variavel de ambiente
 		Password: "", // no password set
-		DB:       0,  // use default DB
+		//@todo passar para variavel de ambiente
+		DB: 0, // use default DB
 	})
 
 	status := rdb.Ping(context.Background())

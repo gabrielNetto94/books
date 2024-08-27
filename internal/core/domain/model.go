@@ -13,7 +13,7 @@ type Book struct {
 }
 
 // @todo verificar se mantém model separada para cada domínio
-type BookError struct {
+type DomainError struct {
 	Message string `json:"message"`
 	Code    string `json:"code"`
 	Error   error  `json:"error,omitempty"`
