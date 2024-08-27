@@ -10,9 +10,9 @@ import (
 func (b BookHandlers) GetBookById(ctx *gin.Context) {
 
 	id := ctx.Param("id")
-	book, err := b.service.FindById(id)
-	if err != nil {
-		httpreponse.InternalServerError(ctx.Writer, httpreponse.InternalError{Message: "Error on create book", Error: err})
+	book, serviceErr := b.service.FindById(id)
+	if serviceErr.Error != nil {
+		httpreponse.ErrorResponse(ctx, serviceErr)
 		return
 	}
 

@@ -2,6 +2,7 @@ package bookhandler
 
 import (
 	httpreponse "books/internal/adapters/rest/http-reponse"
+	errorscode "books/internal/consts/errors-code"
 	"books/internal/core/domain"
 	"net/http"
 
@@ -13,18 +14,16 @@ func (b BookHandlers) UpdateBook(ctx *gin.Context) {
 	var book domain.Book
 	id := ctx.Param("id")
 	if err := ctx.BindJSON(&book); err != nil {
-		httpreponse.BadRequest(ctx.Writer, "Invalid request")
-		return
-	}
-	if err := book.Validate(); err != nil {
-		httpreponse.BadRequest(ctx.Writer, err.Error())
+		httpreponse.ErrorResponse(ctx, domain.DomainError{
+			Message: "Invalid request",
+			Error:   err,
+			Code:    errorscode.ErrInvalidInput,
+		})
 		return
 	}
 
-	book.Id = id
-
-	if err := b.service.UpdateBook(book); err != nil {
-		httpreponse.InternalServerError(ctx.Writer, httpreponse.InternalError{Message: "Error on create book", Error: err})
+	if serviceErr := b.service.UpdateBook(id, book); serviceErr.Error != nil {
+		httpreponse.ErrorResponse(ctx, serviceErr)
 		return
 	}
 

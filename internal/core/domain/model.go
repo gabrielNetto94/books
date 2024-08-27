@@ -3,6 +3,8 @@ package domain
 import (
 	"errors"
 	"strings"
+
+	"github.com/google/uuid"
 )
 
 type Book struct {
@@ -19,22 +21,25 @@ type DomainError struct {
 	Error   error  `json:"error,omitempty"`
 }
 
-func (b Book) Validate() (err error) {
+func (b Book) Validate() error {
+	var errs []string
 
-	var errStrings []string
+	if _, err := uuid.Parse(b.Id); err != nil {
+		errs = append(errs, "Invalid book ID")
+	}
 	if b.Author == "" {
-		errStrings = append(errStrings, "Invalid author")
+		errs = append(errs, "Invalid author")
 	}
 	if b.Title == "" {
-		errStrings = append(errStrings, "Invalid tittle")
+		errs = append(errs, "Invalid title")
 	}
 	if b.Desc == "" {
-		errStrings = append(errStrings, "Invalid desc")
+		errs = append(errs, "Invalid description")
 	}
 
-	if len(errStrings) == 0 {
+	if len(errs) == 0 {
 		return nil
 	}
 
-	return errors.New(strings.Join(errStrings, ","))
+	return errors.New(strings.Join(errs, ", "))
 }

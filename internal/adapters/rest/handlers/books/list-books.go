@@ -8,11 +8,9 @@ import (
 
 func (b BookHandlers) ListBooks(ctx *gin.Context) {
 
-	b.service.ListAll()
-
-	books, err := b.service.ListAll()
-	if err != nil {
-		httpreponse.InternalServerError(ctx.Writer, httpreponse.InternalError{Message: "Error on create book", Error: err})
+	books, serviceErr := b.service.ListAll()
+	if serviceErr.Error != nil {
+		httpreponse.ErrorResponse(ctx, serviceErr)
 		return
 	}
 
