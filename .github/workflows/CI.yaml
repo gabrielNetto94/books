@@ -7,8 +7,7 @@ on:
   pull_request:
 
 jobs:
-
- lint:
+  lint:
     name: lint
     runs-on: ubuntu-latest
     steps:
@@ -18,7 +17,8 @@ jobs:
         uses: golangci/golangci-lint-action@v6
         # with:
         #   args: --timeout=3m
- tests:
+        
+  tests:
     name: tests
     runs-on: ubuntu-latest
     steps:
@@ -28,7 +28,7 @@ jobs:
         run: go test -v ./...
         # with:
         #   args: --timeout=3m
-
+        
   build:
     runs-on: ubuntu-latest
     steps:
