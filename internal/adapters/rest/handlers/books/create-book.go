@@ -26,5 +26,5 @@ func (b BookHandlers) CreateBook(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Status(http.StatusNoContent)
+	ctx.Status(http.StatusCreated)
 }
