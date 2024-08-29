@@ -19,7 +19,9 @@ func ConnectDatabase() *gorm.DB {
 		log.Fatalln("err:", err.Error())
 	}
 
-	db.AutoMigrate(&domain.Book{})
+	if err := db.AutoMigrate(&domain.Book{}); err != nil {
+		log.Fatalln("err auto migrate:", err.Error())
+	}
 
 	return db
 }

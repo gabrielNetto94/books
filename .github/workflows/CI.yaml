@@ -17,7 +17,7 @@ jobs:
         uses: golangci/golangci-lint-action@v6
         # with:
         #   args: --timeout=3m
-        
+
   tests:
     name: tests
     runs-on: ubuntu-latest
@@ -38,7 +38,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: "1.20"
+          go-version: "1.22"
 
       - name: Cache Go modules
         uses: actions/cache@v3
