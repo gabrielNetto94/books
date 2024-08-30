@@ -41,7 +41,7 @@ func (s *UserRepositoryImpl) Update(book domain.Book) error {
 
 func (s *UserRepositoryImpl) FindById(id string) (domain.Book, error) {
 	var book = domain.Book{Id: id}
-	err := s.cache.GetObject(id, &book)
+	err := s.cache.Get(id, &book)
 	if err == nil {
 		return book, nil
 	}

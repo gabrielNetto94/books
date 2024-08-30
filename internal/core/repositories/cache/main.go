@@ -36,19 +36,7 @@ func ConnectCache() *CacheRepository {
 	return &CacheRepository{rdb}
 }
 
-func (c CacheRepository) Get(key string) (string, error) {
-
-	var ctx = context.Background()
-	val, err := c.cache.Get(ctx, key).Result()
-	if err == redis.Nil {
-		return "", errors.New("key dos not exists")
-	} else if err != nil {
-		return "", err
-	}
-
-	return val, nil
-}
-func (c CacheRepository) GetObject(key string, obj any) error {
+func (c CacheRepository) Get(key string, obj any) error {
 
 	var ctx = context.Background()
 	val, err := c.cache.Get(ctx, key).Result()
