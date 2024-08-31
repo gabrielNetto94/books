@@ -1,7 +1,6 @@
 package env
 
 import (
-	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -10,7 +9,11 @@ import (
 func GetVariable(variable string) string {
 
 	if err := godotenv.Load(); err != nil {
-		log.Fatal("Error loading .env file")
+		panic(err)
 	}
 	return os.Getenv(variable)
+}
+
+func IsProduction() bool {
+	return GetVariable("ENVIRONMENT") == "production"
 }

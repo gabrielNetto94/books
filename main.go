@@ -2,9 +2,9 @@ package main
 
 import (
 	"books/internal/adapters/rest/routes"
+	"books/internal/config/logger"
 	"books/internal/core/repositories/cache"
 	"books/internal/core/repositories/db"
-	"log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,6 +19,7 @@ func main() {
 	routes.InitRoutes(router, db, cache)
 
 	if err := router.Run(":3000"); err != nil {
-		log.Fatal("error running server:", err)
+		logger.Log.Fatal("Error running server: ", err.Error())
 	}
+	logger.Log.Info("Server running on port 3000")
 }

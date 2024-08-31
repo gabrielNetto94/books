@@ -1,8 +1,9 @@
 package db
 
 import (
+	"books/internal/config/env"
 	"books/internal/core/domain"
-	"books/internal/pkg/env"
+
 	"log"
 
 	"gorm.io/driver/postgres"
