@@ -1,7 +1,7 @@
 package cache
 
 import (
-	"books/internal/pkg/env"
+	"books/internal/config/env"
 	"context"
 	"encoding/json"
 	"log"
@@ -18,16 +18,15 @@ type CacheRepository struct {
 func NewCacheInstance(cache *redis.Client) *CacheRepository {
 	return &CacheRepository{cache}
 }
-
 func ConnectCache() *CacheRepository {
-	rdb := redis.NewClient(&redis.Options{
-		Addr: env.GetVariable("CACHE_URL"),
-		//@todo passar para variavel de ambiente
-		Password: "", // no password set
-		//@todo passar para variavel de ambiente
-		DB: 0, // use default DB
-	})
 
+	opt, err := redis.ParseURL(env.GetVariable("CACHE_URL"))
+	if err != nil {
+		log.Fatal("Error init cache", err.Error())
+	}
+
+	// Create client as usually.
+	rdb := redis.NewClient(opt)
 	status := rdb.Ping(context.Background())
 
 	if status.Err() != nil {
