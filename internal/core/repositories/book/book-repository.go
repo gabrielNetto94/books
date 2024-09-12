@@ -25,7 +25,12 @@ type Bookrepository interface {
 }
 
 func (s *UserRepositoryImpl) Save(book domain.Book) error {
-	return s.db.Create(book).Error
+
+	if err := s.db.Create(book).Error; err != nil {
+		return err
+	}
+	_ = s.cache.Set(book.Id, book)
+	return nil
 }
 
 func (s *UserRepositoryImpl) Update(book domain.Book) error {

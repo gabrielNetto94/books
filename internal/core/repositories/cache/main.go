@@ -15,6 +15,8 @@ type CacheRepository struct {
 	cache *redis.Client
 }
 
+var ctx = context.Background()
+
 func NewCacheInstance(cache *redis.Client) *CacheRepository {
 	return &CacheRepository{cache}
 }
@@ -27,7 +29,7 @@ func ConnectCache() *CacheRepository {
 
 	// Create client as usually.
 	rdb := redis.NewClient(opt)
-	status := rdb.Ping(context.Background())
+	status := rdb.Ping(ctx)
 
 	if status.Err() != nil {
 		log.Fatal("Error init cache")
@@ -37,7 +39,6 @@ func ConnectCache() *CacheRepository {
 
 func (c CacheRepository) Get(key string, obj any) error {
 
-	var ctx = context.Background()
 	val, err := c.cache.Get(ctx, key).Result()
 	if err == redis.Nil {
 		return errors.New("key dos not exists")
@@ -49,12 +50,8 @@ func (c CacheRepository) Get(key string, obj any) error {
 }
 
 func (c CacheRepository) Set(key string, value any) error {
-
-	var ctx = context.Background()
 	return c.cache.Set(ctx, key, value, 0).Err()
 }
 func (c CacheRepository) Del(key string) error {
-
-	var ctx = context.Background()
 	return c.cache.Del(ctx, key).Err()
 }
