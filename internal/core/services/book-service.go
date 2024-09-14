@@ -32,6 +32,7 @@ func (s *BookService) FindById(bookId string) (domain.Book, domain.DomainError) 
 
 func (s *BookService) CreateBook(book domain.Book) domain.DomainError {
 
+	book.Id = uuid.New().String()
 	if err := book.Validate(); err != nil {
 		return domain.DomainError{
 			Message: "book validation failed",
@@ -40,7 +41,6 @@ func (s *BookService) CreateBook(book domain.Book) domain.DomainError {
 		}
 	}
 
-	book.Id = uuid.New().String()
 	if err := s.repo.Save(book); err != nil {
 		return domain.DomainError{
 			Message: "failed to save book",
