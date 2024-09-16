@@ -2,20 +2,27 @@ package handler
 
 import (
 	"context"
-	"fmt"
 
 	pb "books/internal/adapters/grpc/books/proto"
+	"books/internal/core/services"
 )
 
-func GetBook(ctx context.Context, req *pb.GetBookRequest) (*pb.GetBookResponse, error) {
+type Server struct {
+	pb.BookServiceServer
+	Service *services.BookService
+}
 
-	fmt.Printf("req.Id: %v\n", req.Id)
+func (s Server) GetBook(_ context.Context, req *pb.GetBookRequest) (*pb.GetBookResponse, error) {
+
+	book, serviceErr := s.Service.FindById(req.Id)
+	if serviceErr.Error != nil {
+		return &pb.GetBookResponse{}, serviceErr.Error
+	}
 
 	return &pb.GetBookResponse{
-		Id:     "23",
-		Title:  "Test Title",
-		Author: "Test Author",
-		Desc:   "Test Description",
+		Id:     req.Id,
+		Title:  book.Title,
+		Author: book.Author,
+		Desc:   book.Desc,
 	}, nil
-
 }

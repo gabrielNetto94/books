@@ -2,19 +2,18 @@ package routes
 
 import (
 	booksroute "books/internal/adapters/rest/routes/books"
-	"books/internal/core/repositories/cache"
+	"books/internal/core/services"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 )
 
-func InitRoutes(router *gin.Engine, db *gorm.DB, cache *cache.CacheRepository) {
+func InitRoutes(router *gin.Engine, service *services.BookService) {
 
 	router.GET("/ping", Pong)
 
 	v1Group := router.Group("/v1")
-	booksroute.LoadBooksRoute(v1Group, db, cache)
+	booksroute.LoadBooksRoute(v1Group, service)
 }
 
 func Pong(ctx *gin.Context) {

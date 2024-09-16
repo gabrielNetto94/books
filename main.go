@@ -1,55 +1,60 @@
 package main
 
 import (
+	"books/internal/adapters/grpc/books/handler"
 	pb "books/internal/adapters/grpc/books/proto"
 	"books/internal/adapters/rest/routes"
 	"books/internal/config/logger"
+	bookrepository "books/internal/core/repositories/book"
 	"books/internal/core/repositories/cache"
 	"books/internal/core/repositories/db"
-	"log"
+	"books/internal/core/services"
 	"net"
 
 	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
-	"gorm.io/gorm"
 )
 
-type Server struct {
-	pb.BookServiceServer
-}
+const REST_API_PORT = ":3000"
+const GRPC_SERVER_PORT = ":3001"
 
 func main() {
 
 	db := db.ConnectDatabase()
 	cache := cache.ConnectCache()
 
-	initRestAPi(db, cache)
-	//initGrpcServer()
+	repo := bookrepository.NewBookRepository(db, cache)
+	service := services.NewBookService(repo)
+
+	go initRestAPi(service)
+	initGrpcServer(service)
 
 }
 
-func initRestAPi(db *gorm.DB, cache *cache.CacheRepository) {
+func initRestAPi(service *services.BookService) {
 	router := gin.Default()
-	routes.InitRoutes(router, db, cache)
-	if err := router.Run(":3000"); err != nil {
+	routes.InitRoutes(router, service)
+	if err := router.Run(REST_API_PORT); err != nil {
 		logger.Log.Fatal("Error running server: ", err.Error())
 	}
-	logger.Log.Info("Server running on port 3000")
+	logger.Log.Info("Server running on port " + REST_API_PORT)
 }
 
-func initGrpcServer() {
+func initGrpcServer(service *services.BookService) {
 
-	var addr string = ":50051"
-	lis, err := net.Listen("tcp", addr)
+	lis, err := net.Listen("tcp", GRPC_SERVER_PORT)
 	if err != nil {
-		log.Fatalf("Error listen server: %v", err)
+		logger.Log.Fatal("Error listen: " + err.Error())
 	}
-	server := grpc.NewServer()
-	pb.RegisterBookServiceServer(server, &Server{})
 
-	if err = server.Serve(lis); err != nil {
-		log.Fatalf("Erorr serve: %v", err)
+	server := grpc.NewServer()
+	pb.RegisterBookServiceServer(server, &handler.Server{
+		Service: service,
+	})
+
+	if err := server.Serve(lis); err != nil {
+		logger.Log.Fatal("Error serve: " + err.Error())
 	}
-	logger.Log.Info("Server running on port 50051")
+	logger.Log.Info("Server running on port " + GRPC_SERVER_PORT)
 
 }
