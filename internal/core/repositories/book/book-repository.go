@@ -4,6 +4,7 @@ import (
 	"books/internal/core/domain"
 	"books/internal/core/repositories/cache"
 	"encoding/json"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -46,11 +47,14 @@ func (s *UserRepositoryImpl) Update(book domain.Book) error {
 
 func (s *UserRepositoryImpl) FindById(id string) (domain.Book, error) {
 	var book = domain.Book{Id: id}
-	err := s.cache.Get(id, &book)
-	if err == nil {
+	if err := s.cache.Get(id, &book); err == nil {
 		return book, nil
 	}
 	resp := s.db.Find(&book)
+	if resp.RowsAffected == 0 {
+		return domain.Book{}, fmt.Errorf("book not found")
+	}
+
 	bookBytes, err := json.Marshal(book)
 	if err == nil {
 		_ = s.cache.Set(book.Id, bookBytes)
