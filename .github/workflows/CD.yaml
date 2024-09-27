@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - fix/semantic-release
-  
+
 jobs:
   release:
     name: release
@@ -21,12 +21,14 @@ jobs:
         uses: cycjimmy/semantic-release-action@v4
         with:
           semantic_version: 24.0.0
-          dry_run: true
+          dry_run: false  # Change to false after testing
           extra_plugins: |
+            @semantic-release/commit-analyzer
+            @semantic-release/release-notes-generator
             @semantic-release/git
         env:
           GITHUB_TOKEN: ${{ secrets.CD_GO }}
-  
+
   test:
     needs: release
     name: test
