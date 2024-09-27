@@ -28,7 +28,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
   test:
-    needs: semantic-release
+    needs: release
     name: test
     runs-on: ubuntu-latest
     steps:
