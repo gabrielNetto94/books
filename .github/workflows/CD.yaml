@@ -20,8 +20,8 @@ jobs:
         id: semantic
         uses: cycjimmy/semantic-release-action@v4
         with:
-          semantic_version: 24.0.0
-          dry_run: true
+          # semantic_version: 24.0.0
+          # dry_run: true
           extra_plugins: |
             @semantic-release/git
         env:
@@ -33,4 +33,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: print version
-        run: echo ${{ needs.semantic-release.outputs.version }}
+        run: echo ${{ needs.semantic-release.outputs.version }} |
