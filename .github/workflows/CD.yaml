@@ -33,4 +33,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: print version
-        run: echo ${{ needs.changes.outputs.version }}
+        run: echo ${{ needs.semantic-release.outputs.version }}
