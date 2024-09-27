@@ -1,0 +1,35 @@
+name: CI for Go Application
+
+on:
+  push:
+    branches:
+      - main
+      - fix/semantic-release
+  
+jobs:
+  semantic-release:
+    name: changes
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.semantic.outputs.new_release_version }}
+      published: ${{ steps.semantic.outputs.new_release_published }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Semantic Release
+        id: semantic
+        uses: cycjimmy/semantic-release-action@v4
+        with:
+          semantic_version: 24.0.0
+          dry_run: true
+          extra_plugins: |
+            @semantic-release/git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+  teste:
+    name: tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: print version
+        run: echo ${{ needs.changes.outputs.version }}
