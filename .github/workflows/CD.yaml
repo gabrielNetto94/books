@@ -7,7 +7,7 @@ on:
       - fix/semantic-release
   
 jobs:
-  semantic-release:
+  release:
     name: changes
     runs-on: ubuntu-latest
     outputs:
@@ -20,19 +20,18 @@ jobs:
         id: semantic
         uses: cycjimmy/semantic-release-action@v4
         with:
-          # semantic_version: 24.0.0
-          # dry_run: true
+          semantic_version: 24.0.0
+          dry_run: true
           extra_plugins: |
             @semantic-release/git
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
-  teste:
+  test:
     needs: semantic-release
-    name: tests
+    name: test
     runs-on: ubuntu-latest
     steps:
       - name: print version
         run:  |
-          echo ${{ needs.semantic-release.outputs.version }}
-          echo 1+1
+          echo ${{ needs.release.outputs.version }}
