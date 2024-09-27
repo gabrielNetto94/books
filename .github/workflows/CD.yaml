@@ -8,7 +8,7 @@ on:
   
 jobs:
   release:
-    name: changes
+    name: release
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.semantic.outputs.new_release_version }}

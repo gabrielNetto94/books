@@ -2,9 +2,8 @@ module.exports = {
   branches: [
     "+([0-9])?(.{+([0-9]),x}).x",
     "main",
-    "fix/semantic-release",
     "next",
-    "next-major",
+    "fix/semantic-release",
     { name: "beta", prerelease: true },
     { name: "alpha", prerelease: true },
   ],
