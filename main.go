@@ -37,7 +37,6 @@ func initRestAPi(service *services.BookService) {
 	if err := router.Run(REST_API_PORT); err != nil {
 		logger.Log.Fatal("Error running server: ", err.Error())
 	}
-
 	logger.Log.Info("Server running on port " + REST_API_PORT)
 }
 
