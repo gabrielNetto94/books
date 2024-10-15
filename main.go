@@ -1,13 +1,14 @@
 package main
 
 import (
+	"books/internal/adapters/cache"
+	"books/internal/adapters/database"
 	"books/internal/adapters/grpc/books/handler"
 	pb "books/internal/adapters/grpc/books/proto"
 	"books/internal/adapters/rest/routes"
 	"books/internal/config/logger"
 	bookrepository "books/internal/core/repositories/book"
-	"books/internal/core/repositories/cache"
-	"books/internal/core/repositories/db"
+
 	"books/internal/core/services"
 	"net"
 
@@ -20,7 +21,7 @@ const GRPC_SERVER_PORT = ":3001"
 
 func main() {
 
-	db := db.ConnectDatabase()
+	db := database.ConnectDatabase()
 	cache := cache.ConnectCache()
 
 	repo := bookrepository.NewBookRepository(db, cache)

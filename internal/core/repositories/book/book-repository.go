@@ -1,8 +1,9 @@
 package bookrepository
 
 import (
+	"books/internal/adapters/cache"
 	"books/internal/core/domain"
-	"books/internal/core/repositories/cache"
+
 	"encoding/json"
 	"fmt"
 
