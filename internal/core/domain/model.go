@@ -1,6 +1,7 @@
 package domain
 
 import (
+	errorscode "books/internal/consts/errors-code"
 	"errors"
 	"strings"
 
@@ -16,9 +17,9 @@ type Book struct {
 
 // @todo verificar se mantém model separada para cada domínio
 type DomainError struct {
-	Message string `json:"message"`
-	Code    string `json:"code"`
-	Error   error  `json:"error,omitempty"`
+	Message string               `json:"message"`
+	Code    errorscode.ErrorCode `json:"code"`
+	Error   error                `json:"error,omitempty"`
 }
 
 func (b Book) Validate() error {
