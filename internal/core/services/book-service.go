@@ -74,15 +74,15 @@ func (s *BookService) UpdateBook(bookId string, book domain.Book) domain.DomainE
 	return domain.DomainError{}
 }
 
-func (s *BookService) ListAll() ([]domain.Book, domain.DomainError) {
+func (s *BookService) ListAll() ([]domain.Book, *domain.DomainError) {
 
 	books, err := s.repo.ListAll()
 	if err != nil {
-		return nil, domain.DomainError{
+		return nil, &domain.DomainError{
 			Message: "failed to list all books",
 			Code:    errorscode.ErrInternalError,
 			Error:   err,
 		}
 	}
-	return books, domain.DomainError{}
+	return books, nil
 }

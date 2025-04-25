@@ -9,8 +9,8 @@ import (
 func (b BookHandlers) ListBooks(ctx *gin.Context) {
 
 	books, serviceErr := b.service.ListAll()
-	if serviceErr.Error != nil {
-		httpreponse.ErrorResponse(ctx, serviceErr)
+	if serviceErr != nil {
+		httpreponse.ErrorResponse(ctx, *serviceErr)
 		return
 	}
 
