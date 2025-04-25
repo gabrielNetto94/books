@@ -12,8 +12,8 @@ type UserRepositoryImplMock struct {
 	fake datafake.DataFake
 }
 
-func NewBookRepositoryMock() *UserRepositoryImplMock {
-	return &UserRepositoryImplMock{datafake.New()}
+func NewBookRepositoryMock(dataFake datafake.DataFake) *UserRepositoryImplMock {
+	return &UserRepositoryImplMock{dataFake}
 }
 
 func (s *UserRepositoryImplMock) Save(book domain.Book) error {

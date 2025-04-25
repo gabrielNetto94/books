@@ -8,6 +8,7 @@ import (
 	"books/internal/config/logger"
 	bookmock "books/internal/core/repositories/book-mock"
 	"books/internal/core/services"
+	datafake "books/pkg/data-fake"
 	"net"
 
 	"google.golang.org/grpc"
@@ -27,7 +28,7 @@ func main() {
 	// cache := cache.ConnectCache()
 
 	// repo := bookrepository.NewBookRepository(db, cache)
-	repo := bookmock.NewBookRepositoryMock()
+	repo := bookmock.NewBookRepositoryMock(datafake.NewFaker())
 
 	service := services.NewBookService(repo)
 	bookHandler := bookhandler.NewBookHandlers(service)

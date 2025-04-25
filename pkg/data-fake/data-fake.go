@@ -11,7 +11,7 @@ type DataFake interface {
 
 type dataFake struct{}
 
-func New() DataFake {
+func NewFaker() DataFake {
 	return &dataFake{}
 }
 
