@@ -1,8 +1,8 @@
 package bookhandler
 
 import (
-	"books/internal/config/logger"
 	"books/internal/core/services"
+	"books/internal/infra/logger"
 )
 
 type BookHandlers struct {

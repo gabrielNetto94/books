@@ -2,7 +2,7 @@ package cache
 
 import (
 	"books/internal/config/env"
-	"books/internal/config/logger"
+
 	"context"
 	"encoding/json"
 
@@ -24,7 +24,7 @@ func ConnectCache() *CacheRepository {
 
 	opt, err := redis.ParseURL(env.GetVariable("CACHE_URL"))
 	if err != nil {
-		logger.Log.Fatal("Error init cache", err.Error())
+		//logger.Log.Fatal("Error init cache", err.Error())
 	}
 
 	// Create client as usually.
@@ -32,7 +32,7 @@ func ConnectCache() *CacheRepository {
 	status := rdb.Ping(ctx)
 
 	if status.Err() != nil {
-		logger.Log.Fatal("Error init cache", status.Err().Error())
+		//logger.Log.Fatal("Error init cache", status.Err().Error())
 	}
 	return &CacheRepository{rdb}
 }

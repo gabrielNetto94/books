@@ -1,10 +1,10 @@
 package services
 
 import (
-	"books/internal/config/logger"
 	errorscode "books/internal/consts/errors-code"
 	"books/internal/core/domain"
 	bookrepository "books/internal/core/repositories/book"
+	"books/internal/infra/logger"
 
 	"github.com/google/uuid"
 )

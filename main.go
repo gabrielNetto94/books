@@ -3,7 +3,8 @@ package main
 import (
 	bookhandler "books/internal/adapters/rest/handlers/books"
 	"books/internal/adapters/rest/routes"
-	"books/internal/config/logger"
+	"books/internal/infra/logger"
+
 	bookmock "books/internal/core/repositories/book-mock"
 	"books/internal/core/services"
 	datafake "books/pkg/data-fake"

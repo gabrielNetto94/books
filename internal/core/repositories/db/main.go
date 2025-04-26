@@ -2,7 +2,6 @@ package db
 
 import (
 	"books/internal/config/env"
-	"books/internal/config/logger"
 	"books/internal/core/domain"
 
 	"gorm.io/driver/postgres"
@@ -16,11 +15,11 @@ func ConnectDatabase() *gorm.DB {
 	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 
 	if err != nil {
-		logger.Log.Fatal("Error connecting to database: ", err.Error())
+		//logger.Log.Fatal("Error connecting to database: ", err.Error())
 	}
 
 	if err := db.AutoMigrate(&domain.Book{}); err != nil {
-		logger.Log.Fatal("Error auto migrate: ", err.Error())
+		//logger.Log.Fatal("Error auto migrate: ", err.Error())
 	}
 
 	return db
