@@ -3,6 +3,7 @@ package db
 import (
 	"books/internal/config/env"
 	"books/internal/core/domain"
+	"log"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -15,6 +16,7 @@ func ConnectDatabase() *gorm.DB {
 	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
 
 	if err != nil {
+		log.Fatal("Error connecting to database: ", err.Error())
 		//logger.Log.Fatal("Error connecting to database: ", err.Error())
 	}
 
