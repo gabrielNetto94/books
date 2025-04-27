@@ -15,5 +15,6 @@ func GetVariable(variable string) string {
 }
 
 func IsProduction() bool {
-	return GetVariable("ENVIRONMENT") == "production"
+	return false
+	//return GetVariable("ENVIRONMENT") == "production"
 }
