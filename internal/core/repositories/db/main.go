@@ -1,7 +1,6 @@
 package db
 
 import (
-	"books/internal/config/env"
 	"books/internal/core/domain"
 	"log"
 
@@ -9,11 +8,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func ConnectDatabase() *gorm.DB {
+func ConnectDatabase(url string) *gorm.DB {
 
-	dbURL := env.GetVariable("DATABASE_URL")
-
-	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(url), &gorm.Config{})
 
 	if err != nil {
 		log.Fatal("Error connecting to database: ", err.Error())

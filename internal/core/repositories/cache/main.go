@@ -1,7 +1,6 @@
 package cache
 
 import (
-	"books/internal/config/env"
 	"fmt"
 	"log"
 
@@ -22,9 +21,9 @@ var ctx = context.Background()
 func NewCacheInstance(cache *redis.Client) *CacheRepository {
 	return &CacheRepository{cache}
 }
-func ConnectCache() *CacheRepository {
+func ConnectCache(url string) *CacheRepository {
 
-	opt, err := redis.ParseURL(env.GetVariable("CACHE_URL"))
+	opt, err := redis.ParseURL(url)
 	if err != nil {
 		fmt.Println("Error init cache", err.Error())
 		//logger.Log.Fatal("Error init cache", err.Error())

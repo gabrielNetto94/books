@@ -8,6 +8,7 @@ import (
 	bookmock "books/internal/core/repositories/book-mock"
 	"books/internal/core/services"
 	datafake "books/pkg/data-fake"
+	"books/pkg/env"
 )
 
 const REST_API_PORT = ":3000"
@@ -15,11 +16,23 @@ const GRPC_SERVER_PORT = ":3001"
 
 func main() {
 
+	log := logger.NewLogrusAdapter()
+
+	envv := env.NewLoader()
+	if err := envv.Load(); err != nil {
+		log.Fatal("Error loading env: ", err.Error())
+	}
+
+	if envv.IsProduction() {
+		log.SetLevel(logger.ErrorLevel)
+	} else {
+		log.SetLevel(logger.InfoLevel)
+	}
+
 	// db := db.ConnectDatabase()
 	// cache := cache.ConnectCache()
 	// repo := bookrepository.NewBookRepository(db, cache)
 	repo := bookmock.NewBookRepositoryMock(datafake.NewFaker())
-	log := logger.NewLogrusAdapter()
 
 	service := services.NewBookService(repo, log)
 	bookHandler := bookhandler.NewBookHandlers(service, log)
