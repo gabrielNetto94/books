@@ -5,6 +5,7 @@ import (
 	"books/internal/adapters/rest/routes"
 	loglevel "books/internal/infra/log"
 	"books/internal/infra/log/logrus"
+	"os"
 
 	bookmock "books/internal/core/repositories/book-mock"
 	"books/internal/core/services"
@@ -19,15 +20,22 @@ func main() {
 
 	log := logrus.NewLogrusAdapter()
 
-	envv := env.NewLoader()
-	if err := envv.Load(); err != nil {
-		log.Fatal("Error loading env: ", err.Error())
-	}
+	log.Info("RAILWAY_ENVIRONMENT_NAME:", os.Getenv("RAILWAY_ENVIRONMENT_NAME"))
 
-	if envv.IsProduction() {
+	if os.Getenv("RAILWAY_ENVIRONMENT_NAME") == "production" {
 		log.SetLevel(loglevel.ErrorLevel)
 	} else {
-		log.SetLevel(loglevel.InfoLevel)
+
+		envv := env.NewLoader()
+		if err := envv.Load(); err != nil {
+			log.Fatal("Error loading env: ", err.Error())
+		}
+
+		if envv.IsProduction() {
+			log.SetLevel(loglevel.ErrorLevel)
+		} else {
+			log.SetLevel(loglevel.InfoLevel)
+		}
 	}
 
 	// db := db.ConnectDatabase()
