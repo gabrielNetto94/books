@@ -3,7 +3,8 @@ package main
 import (
 	bookhandler "books/internal/adapters/rest/handlers/books"
 	"books/internal/adapters/rest/routes"
-	"books/internal/infra/logger"
+	loglevel "books/internal/infra/log"
+	"books/internal/infra/log/logrus"
 
 	bookmock "books/internal/core/repositories/book-mock"
 	"books/internal/core/services"
@@ -16,7 +17,7 @@ const GRPC_SERVER_PORT = ":3001"
 
 func main() {
 
-	log := logger.NewLogrusAdapter()
+	log := logrus.NewLogrusAdapter()
 
 	envv := env.NewLoader()
 	if err := envv.Load(); err != nil {
@@ -24,9 +25,9 @@ func main() {
 	}
 
 	if envv.IsProduction() {
-		log.SetLevel(logger.ErrorLevel)
+		log.SetLevel(loglevel.ErrorLevel)
 	} else {
-		log.SetLevel(logger.InfoLevel)
+		log.SetLevel(loglevel.InfoLevel)
 	}
 
 	// db := db.ConnectDatabase()

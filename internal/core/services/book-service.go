@@ -4,17 +4,17 @@ import (
 	errorscode "books/internal/consts/errors-code"
 	"books/internal/core/domain"
 	bookrepository "books/internal/core/repositories/book"
-	"books/internal/infra/logger"
+	"books/internal/infra/log"
 
 	"github.com/google/uuid"
 )
 
 type BookService struct {
 	repo bookrepository.Bookrepository
-	log  logger.Logger
+	log  log.Logger
 }
 
-func NewBookService(repo bookrepository.Bookrepository, log logger.Logger) *BookService {
+func NewBookService(repo bookrepository.Bookrepository, log log.Logger) *BookService {
 	return &BookService{repo, log}
 }
 
