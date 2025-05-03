@@ -19,26 +19,26 @@ func NewBookService(repo bookrepository.BookRepository, log log.Logger) ports.Bo
 	return &BookService{repo, log}
 }
 
-func (s *BookService) FindById(bookId string) (domain.Book, domain.DomainError) {
+func (s *BookService) FindById(bookId string) (domain.Book, *domain.DomainError) {
 	book, err := s.repo.FindById(bookId)
 	if err != nil {
 		s.log.Error("Failed to find book by ID: ", err)
-		return domain.Book{}, domain.DomainError{
+		return domain.Book{}, &domain.DomainError{
 			Message: "book not found",
 			Code:    errorscode.ErrNotFound,
 			Error:   err,
 		}
 	}
-	return book, domain.DomainError{}
+	return book, nil
 }
 
-func (s *BookService) CreateBook(book domain.Book) domain.DomainError {
+func (s *BookService) CreateBook(book domain.Book) *domain.DomainError {
 
 	s.log.Info("Creating book: ", book)
 	book.Id = uuid.New().String()
 	if err := book.Validate(); err != nil {
 		s.log.Error("Book validation failed: ", err)
-		return domain.DomainError{
+		return &domain.DomainError{
 			Message: "book validation failed",
 			Error:   err,
 			Code:    errorscode.ErrInvalidInput,
@@ -47,22 +47,22 @@ func (s *BookService) CreateBook(book domain.Book) domain.DomainError {
 
 	if err := s.repo.Save(book); err != nil {
 		s.log.Error("Failed to save book: ", err)
-		return domain.DomainError{
+		return &domain.DomainError{
 			Message: "failed to save book",
 			Code:    errorscode.ErrInternalError,
 			Error:   err,
 		}
 	}
 
-	return domain.DomainError{}
+	return nil
 }
 
-func (s *BookService) UpdateBook(bookId string, book domain.Book) domain.DomainError {
+func (s *BookService) UpdateBook(bookId string, book domain.Book) *domain.DomainError {
 
 	book.Id = bookId
 	if err := book.Validate(); err != nil {
 		s.log.Error("Book validation failed: ", err)
-		return domain.DomainError{
+		return &domain.DomainError{
 			Message: "book validation failed",
 			Error:   err,
 			Code:    errorscode.ErrInvalidInput,
@@ -72,13 +72,13 @@ func (s *BookService) UpdateBook(bookId string, book domain.Book) domain.DomainE
 	err := s.repo.Update(book)
 	if err != nil {
 		s.log.Error("Failed to update book: ", err)
-		return domain.DomainError{
+		return &domain.DomainError{
 			Message: "failed to update book",
 			Code:    errorscode.ErrInternalError,
 			Error:   err,
 		}
 	}
-	return domain.DomainError{}
+	return nil
 }
 
 func (s *BookService) ListAll() ([]domain.Book, *domain.DomainError) {
