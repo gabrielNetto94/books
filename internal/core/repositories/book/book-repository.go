@@ -11,14 +11,14 @@ import (
 
 type UserRepositoryImpl struct {
 	db    *gorm.DB
-	cache *cache.CacheRepository
+	cache cache.CacheRepositoryInterface
 }
 
-func NewBookRepository(db *gorm.DB, cache *cache.CacheRepository) *UserRepositoryImpl {
+func NewBookRepository(db *gorm.DB, cache cache.CacheRepositoryInterface) *UserRepositoryImpl {
 	return &UserRepositoryImpl{db, cache}
 }
 
-type Bookrepository interface {
+type BookRepository interface {
 	Save(book domain.Book) error
 	FindById(id string) (domain.Book, error)
 	ListAll() ([]domain.Book, error)

@@ -1,7 +1,7 @@
 package bookhandler
 
 import (
-	httpreponse "books/internal/adapters/rest/http-reponse"
+	httpreponse "books/internal/adapters/http/http-reponse"
 	errorscode "books/internal/consts/errors-code"
 	"books/internal/core/domain"
 

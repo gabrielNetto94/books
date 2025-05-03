@@ -5,16 +5,17 @@ import (
 	"books/internal/core/domain"
 	bookrepository "books/internal/core/repositories/book"
 	"books/internal/infra/log"
+	"books/internal/ports"
 
 	"github.com/google/uuid"
 )
 
 type BookService struct {
-	repo bookrepository.Bookrepository
+	repo bookrepository.BookRepository
 	log  log.Logger
 }
 
-func NewBookService(repo bookrepository.Bookrepository, log log.Logger) *BookService {
+func NewBookService(repo bookrepository.BookRepository, log log.Logger) ports.BookServiceInterface {
 	return &BookService{repo, log}
 }
 

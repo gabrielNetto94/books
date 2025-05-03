@@ -1,7 +1,7 @@
 package bookhandler
 
 import (
-	httpreponse "books/internal/adapters/rest/http-reponse"
+	httpreponse "books/internal/adapters/http/http-reponse"
 
 	"github.com/gin-gonic/gin"
 )

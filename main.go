@@ -1,8 +1,8 @@
 package main
 
 import (
-	bookhandler "books/internal/adapters/rest/handlers/books"
-	"books/internal/adapters/rest/routes"
+	bookhandler "books/internal/adapters/http/handlers/books"
+	"books/internal/adapters/http/routes"
 	loglevel "books/internal/infra/log"
 	"books/internal/infra/log/logrus"
 	"os"
@@ -38,9 +38,10 @@ func main() {
 		}
 	}
 
-	// db := db.ConnectDatabase()
-	// cache := cache.ConnectCache()
-	// repo := bookrepository.NewBookRepository(db, cache)
+	//db := db.ConnectDatabase("postgres://postgres:password@db:5432")
+	//cache := cache.ConnectCache("redis://cache:6379")
+
+	//repo := bookrepository.NewBookRepository(db, cache2)
 	repo := bookmock.NewBookRepositoryMock(datafake.NewFaker())
 
 	service := services.NewBookService(repo, log)
