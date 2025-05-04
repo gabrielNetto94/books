@@ -30,6 +30,7 @@ func NewBookHandlers(service ports.BookServiceInterface, log log.Logger) BookHTT
 func (b BookHandlers) CreateBook(w http.ResponseWriter, r *http.Request) {
 	var book domain.Book
 
+	b.log.Info("CreateBook called")
 	if err := json.NewDecoder(r.Body).Decode(&book); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(domain.DomainError{
@@ -40,9 +41,9 @@ func (b BookHandlers) CreateBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if bookError := b.service.CreateBook(book); bookError.Error != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(bookError)
+	if err := b.service.CreateBook(book); err != nil {
+		b.log.Error("Error creating book: ", err.Error.Error())
+		httputils.HandleError(w, *err)
 		return
 	}
 
@@ -76,13 +77,13 @@ func (b BookHandlers) GetBookById(w http.ResponseWriter, r *http.Request) {
 }
 
 func (b BookHandlers) UpdateBook(w http.ResponseWriter, r *http.Request) {
+
 	b.log.Info("UpdateBook called")
 	id := r.URL.Query().Get("id")
 	var book domain.Book
 
 	if err := json.NewDecoder(r.Body).Decode(&book); err != nil {
-
-		b.log.Error("Error decoding request body: ", err)
+		b.log.Error("Error decoding request body: ", err.Error())
 		httputils.HandleError(w, domain.DomainError{
 			Message: "Invalid request",
 			Error:   err,
@@ -92,6 +93,7 @@ func (b BookHandlers) UpdateBook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if bookError := b.service.UpdateBook(id, book); bookError != nil {
+		b.log.Error("Error updating book: ", bookError.Error.Error())
 		httputils.HandleError(w, *bookError)
 		return
 	}
