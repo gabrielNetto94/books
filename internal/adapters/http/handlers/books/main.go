@@ -1,6 +1,7 @@
 package bookhandler
 
 import (
+	httputils "books/internal/adapters/http/http-utils"
 	errorscode "books/internal/consts/errors-code"
 	"books/internal/core/domain"
 	"books/internal/infra/log"
@@ -49,31 +50,29 @@ func (b BookHandlers) CreateBook(w http.ResponseWriter, r *http.Request) {
 }
 func (b BookHandlers) ListBooks(w http.ResponseWriter, r *http.Request) {
 
-	b.log.Info("ListBooks called 2")
+	b.log.Info("ListBooks called")
 	books, err := b.service.ListAll()
 	if err != nil {
 		b.log.Error("Error listing books: ", err.Error)
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(err)
+		httputils.HandleError(w, *err)
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(books)
+	httputils.JsonResponse(w, http.StatusOK, books)
 }
+
 func (b BookHandlers) GetBookById(w http.ResponseWriter, r *http.Request) {
+
 	b.log.Info("GetBookById called")
+
 	id := r.URL.Query().Get("id")
 	book, err := b.service.FindById(id)
 	if err != nil {
 		b.log.Error("Error getting book by ID: ", err.Error)
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(err)
+		httputils.HandleError(w, *err)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(book)
+	httputils.JsonResponse(w, http.StatusOK, book)
 }
 
 func (b BookHandlers) UpdateBook(w http.ResponseWriter, r *http.Request) {
@@ -82,8 +81,9 @@ func (b BookHandlers) UpdateBook(w http.ResponseWriter, r *http.Request) {
 	var book domain.Book
 
 	if err := json.NewDecoder(r.Body).Decode(&book); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(domain.DomainError{
+
+		b.log.Error("Error decoding request body: ", err)
+		httputils.HandleError(w, domain.DomainError{
 			Message: "Invalid request",
 			Error:   err,
 			Code:    errorscode.ErrInvalidInput,
@@ -92,10 +92,9 @@ func (b BookHandlers) UpdateBook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if bookError := b.service.UpdateBook(id, book); bookError != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(bookError)
+		httputils.HandleError(w, *bookError)
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusNoContent)
 }
