@@ -32,8 +32,7 @@ func (b BookHandlers) CreateBook(w http.ResponseWriter, r *http.Request) {
 
 	b.log.Info("CreateBook called")
 	if err := json.NewDecoder(r.Body).Decode(&book); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(domain.DomainError{
+		httputils.HandleError(w, domain.DomainError{
 			Message: "Invalid request",
 			Error:   err,
 			Code:    errorscode.ErrInvalidInput,
