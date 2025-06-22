@@ -2,14 +2,17 @@ package main
 
 import (
 	bookhandler "books/internal/adapters/http/handlers/books"
+	userhandler "books/internal/adapters/http/handlers/user"
 	"books/internal/adapters/http/routes"
 	loglevel "books/internal/infra/log"
 	"books/internal/infra/log/logrus"
 	"os"
 
-	bookmock "books/internal/core/repositories/book-mock"
+	bookrepository "books/internal/core/repositories/book"
+	cache "books/internal/core/repositories/cache/redis"
+	"books/internal/core/repositories/db"
+	userrepository "books/internal/core/repositories/user"
 	"books/internal/core/services"
-	datafake "books/pkg/data-fake"
 	"books/pkg/env"
 )
 
@@ -18,17 +21,20 @@ const GRPC_SERVER_PORT = ":3001"
 
 func main() {
 
-	//db := db.ConnectDatabase("postgres://postgres:password@db:5432")
-	//cache := cache.ConnectCache("redis://cache:6379")
+	db := db.ConnectDatabase("postgres://postgres:password@db:5432")
+	cache := cache.ConnectCache("redis://cache:6379")
 
-	//repo := bookrepository.NewBookRepository(db, cache2)
 	log := setupLogger()
 
-	repo := bookmock.NewBookRepositoryMock(datafake.NewFaker())
-
-	service := services.NewBookService(repo, log)
+	bookRepo := bookrepository.NewBookRepository(db, cache)
+	service := services.NewBookService(bookRepo, log)
 	bookHandler := bookhandler.NewBookHandlers(service, log)
-	router := routes.InitRouter(bookHandler)
+
+	userRepo := userrepository.NewUserRepository(db, cache)
+	userService := services.NewUserService(userRepo, log)
+	userHandler := userhandler.NewUserHandlers(userService, log)
+
+	router := routes.InitRouter(bookHandler, userHandler)
 
 	if err := router.Run(REST_API_PORT); err != nil {
 		log.Fatal("Error running server: ", err.Error())

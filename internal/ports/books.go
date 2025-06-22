@@ -8,3 +8,7 @@ type BookServiceInterface interface {
 	UpdateBook(bookId string, book domain.Book) *domain.DomainError
 	ListAll() ([]domain.Book, *domain.DomainError)
 }
+
+type UserServiceInterface interface {
+	CreateUser(user domain.User) (string, *domain.DomainError)
+}

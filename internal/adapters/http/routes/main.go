@@ -2,12 +2,13 @@ package routes
 
 import (
 	bookhandler "books/internal/adapters/http/handlers/books"
+	userhandler "books/internal/adapters/http/handlers/user"
 
 	"github.com/gin-gonic/gin"
 )
 
 // InitRouter initializes the Gin router with all routes.
-func InitRouter(bookHandler bookhandler.BookHTTPHandler) *gin.Engine {
+func InitRouter(bookHandler bookhandler.BookHTTPHandler, userHandler userhandler.UserHTTPHandler) *gin.Engine {
 
 	r := gin.Default()
 	// Health check
@@ -22,6 +23,10 @@ func InitRouter(bookHandler bookhandler.BookHTTPHandler) *gin.Engine {
 			books.GET("/:id", gin.WrapF(bookHandler.GetBookById))
 			books.POST("", gin.WrapF(bookHandler.CreateBook))
 			books.PUT("/:id", gin.WrapF(bookHandler.UpdateBook))
+		}
+		users := v1.Group("/users")
+		{
+			users.POST("", gin.WrapF(userHandler.CreateUser))
 		}
 	}
 

@@ -22,5 +22,10 @@ func ConnectDatabase(url string) *gorm.DB {
 		//logger.Log.Fatal("Error auto migrate: ", err.Error())
 	}
 
+	if err := db.AutoMigrate(&domain.User{}); err != nil {
+		log.Fatal("Error auto migrate: ", err.Error())
+		//logger.Log.Fatal("Error auto migrate: ", err.Error())
+	}
+
 	return db
 }
