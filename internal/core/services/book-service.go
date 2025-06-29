@@ -6,6 +6,7 @@ import (
 	bookrepository "books/internal/core/repositories/book"
 	"books/internal/infra/log"
 	"books/internal/ports"
+	"context"
 
 	"github.com/google/uuid"
 )
@@ -81,9 +82,9 @@ func (s *BookService) UpdateBook(bookId string, book domain.Book) *domain.Domain
 	return nil
 }
 
-func (s *BookService) ListAll() ([]domain.Book, *domain.DomainError) {
+func (s *BookService) ListAll(ctx context.Context) ([]domain.Book, *domain.DomainError) {
 
-	books, err := s.repo.ListAll()
+	books, err := s.repo.ListAll(ctx)
 	if err != nil {
 		s.log.Error("Failed to list all books: ", err)
 		return nil, &domain.DomainError{

@@ -5,12 +5,14 @@ import (
 	userhandler "books/internal/adapters/http/handlers/user"
 
 	"github.com/gin-gonic/gin"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
 
 // InitRouter initializes the Gin router with all routes.
 func InitRouter(bookHandler bookhandler.BookHTTPHandler, userHandler userhandler.UserHTTPHandler) *gin.Engine {
 
 	r := gin.Default()
+	r.Use(otelgin.Middleware("asdf-test"))
 	// Health check
 	r.GET("/ping", healthCheckHandler)
 

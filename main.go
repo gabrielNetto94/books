@@ -36,7 +36,8 @@ const GRPC_SERVER_PORT = ":3001"
 func initConn() (*grpc.ClientConn, error) {
 	// It connects the OpenTelemetry Collector through local gRPC connection.
 	// You may replace `localhost:4317` with your endpoint.
-	conn, err := grpc.NewClient("localhost:4317",
+	// conn, err := grpc.NewClient("localhost:4317",
+	conn, err := grpc.NewClient("otel-collector:4317",
 		// Note the use of insecure transport here. TLS is recommended in production.
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
@@ -86,7 +87,7 @@ func main() {
 		log.Fatal("Error creating gRPC connection: ", err.Error())
 	}
 
-	var serviceName = semconv.ServiceNameKey.String("test-service")
+	var serviceName = semconv.ServiceNameKey.String("asdf-test")
 	res, err := resource.New(ctx,
 		resource.WithAttributes(
 			// The service name used to display traces in backends
@@ -99,7 +100,7 @@ func main() {
 
 	shutdownTracerProvider, err := initTracerProvider(ctx, res, conn)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Error initializing tracer provider: ", err.Error())
 	}
 	defer func() {
 		if err := shutdownTracerProvider(ctx); err != nil {
@@ -116,6 +117,13 @@ func main() {
 	userHandler := userhandler.NewUserHandlers(userService, log)
 
 	router := routes.InitRouter(bookHandler, userHandler)
+
+	// tracer := otel.Tracer(serviceName.Value.AsString())
+	// _, iSpan := tracer.Start(ctx, fmt.Sprintf("Sample-%d", 123))
+	// iSpan.End()
+
+	fmt.Printf("serviceName.Value.AsString(): %v\n", serviceName.Value.AsString())
+	// router.Use(otelgin.Middleware(serviceName.Value.AsString()))
 
 	if err := router.Run(REST_API_PORT); err != nil {
 		log.Fatal("Error running server: ", err.Error())

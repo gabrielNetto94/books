@@ -51,7 +51,7 @@ func (b BookHandlers) CreateBook(w http.ResponseWriter, r *http.Request) {
 func (b BookHandlers) ListBooks(w http.ResponseWriter, r *http.Request) {
 
 	b.log.Info("ListBooks called")
-	books, err := b.service.ListAll()
+	books, err := b.service.ListAll(r.Context())
 	if err != nil {
 		b.log.Error("Error listing books: ", err.Error)
 		httputils.HandleError(w, *err)

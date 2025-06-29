@@ -3,6 +3,7 @@ package bookrepository
 import (
 	"books/internal/core/domain"
 	"books/internal/core/repositories/cache"
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -21,7 +22,7 @@ func NewBookRepository(db *gorm.DB, cache cache.CacheRepositoryInterface) *UserR
 type BookRepository interface {
 	Save(book domain.Book) error
 	FindById(id string) (domain.Book, error)
-	ListAll() ([]domain.Book, error)
+	ListAll(ctx context.Context) ([]domain.Book, error)
 	Update(book domain.Book) error
 }
 
@@ -63,9 +64,9 @@ func (s *UserRepositoryImpl) FindById(id string) (domain.Book, error) {
 	return book, resp.Error
 }
 
-func (s *UserRepositoryImpl) ListAll() ([]domain.Book, error) {
+func (s *UserRepositoryImpl) ListAll(ctx context.Context) ([]domain.Book, error) {
 
 	var books []domain.Book
 
-	return books, s.db.Find(&books).Error
+	return books, s.db.WithContext(ctx).Find(&books).Error
 }
