@@ -2,53 +2,53 @@
 #   pg_data:
 
 services:
-  api-books:
-    build:
-      dockerfile: Dockerfile.dev
-      context: ./
-    volumes:
-      - ./:/app
-    ports:
-      - "3000:3000" #http port
-      - "3001:3001" #grpc port
-    depends_on:
-      - db
-      - cache
-      - otel-collector
-      - jaeger
+    api-books:
+        build:
+            dockerfile: Dockerfile.dev
+            context: ./
+        volumes:
+            - ./:/app
+        ports:
+            - "3000:3000" #http port
+            - "3001:3001" #grpc port
+        depends_on:
+            - db
+            - cache
+            - otel-collector
+            - jaeger
 
-  db:
-    image: postgres
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_USER=postgres
-      - POSTGRES_HOST_AUTH_METHOD=trust
+    db:
+        image: postgres
+        ports:
+            - "5432:5432"
+        environment:
+            - POSTGRES_PASSWORD=password
+            - POSTGRES_USER=postgres
+            - POSTGRES_HOST_AUTH_METHOD=trust
 
-  otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.128.0
-    command: ["--config=/etc/otel-collector.yaml"]
-    volumes:
-      - ./otel-collector.yaml:/etc/otel-collector.yaml
-    ports:
-      - 4317:4317
+    otel-collector:
+        image: otel/opentelemetry-collector-contrib:0.128.0
+        command: ["--config=/etc/otel-collector.yaml"]
+        volumes:
+            - ./otel-collector.yaml:/etc/otel-collector.yaml
+        ports:
+            - 4317:4317
 
-  # prometheus:
-  #   image: prom/prometheus:v3.4.2
-  #   volumes:
-  #     - ./prometheus.yaml:/etc/prometheus/prometheus.yml
-  #   ports:
-  #     - 9090:9090
+    # prometheus:
+    #   image: prom/prometheus:v3.4.2
+    #   volumes:
+    #     - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+    #   ports:
+    #     - 9090:9090
 
-  jaeger:
-    image: jaegertracing/all-in-one:1.60
-    ports:
-      - 16686:16686
+    jaeger:
+        image: jaegertracing/all-in-one:1.60
+        ports:
+            - 16686:16686
 
-  cache:
-    image: redis:latest
-    expose:
-      - 6379
-    # ports:
-    # - "6379:6379"
+    cache:
+        image: redis:latest
+        expose:
+            - 6379
+        ports:
+            - "6379:6379"

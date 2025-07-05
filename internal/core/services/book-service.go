@@ -6,22 +6,24 @@ import (
 	bookrepository "books/internal/core/repositories/book"
 	"books/internal/infra/log"
 	"books/internal/ports"
+	"books/pkg/observability"
 	"context"
 
 	"github.com/google/uuid"
 )
 
 type BookService struct {
-	repo bookrepository.BookRepository
-	log  log.Logger
+	repo   bookrepository.BookRepository
+	log    log.Logger
+	tracer observability.Observability
 }
 
-func NewBookService(repo bookrepository.BookRepository, log log.Logger) ports.BookServiceInterface {
-	return &BookService{repo, log}
+func NewBookService(repo bookrepository.BookRepository, log log.Logger, tracer observability.Observability) ports.BookServiceInterface {
+	return &BookService{repo, log, tracer}
 }
 
-func (s *BookService) FindById(bookId string) (domain.Book, *domain.DomainError) {
-	book, err := s.repo.FindById(bookId)
+func (s *BookService) FindById(ctx context.Context, bookId string) (domain.Book, *domain.DomainError) {
+	book, err := s.repo.FindById(ctx, bookId)
 	if err != nil {
 		s.log.Error("Failed to find book by ID: ", err)
 		return domain.Book{}, &domain.DomainError{
@@ -33,7 +35,7 @@ func (s *BookService) FindById(bookId string) (domain.Book, *domain.DomainError)
 	return book, nil
 }
 
-func (s *BookService) CreateBook(book domain.Book) *domain.DomainError {
+func (s *BookService) CreateBook(ctx context.Context, book domain.Book) *domain.DomainError {
 
 	s.log.Info("Creating book: ", book)
 	book.Id = uuid.New().String()
@@ -46,7 +48,7 @@ func (s *BookService) CreateBook(book domain.Book) *domain.DomainError {
 		}
 	}
 
-	if err := s.repo.Save(book); err != nil {
+	if err := s.repo.Save(ctx, book); err != nil {
 		s.log.Error("Failed to save book: ", err)
 		return &domain.DomainError{
 			Message: "failed to save book",
@@ -58,7 +60,7 @@ func (s *BookService) CreateBook(book domain.Book) *domain.DomainError {
 	return nil
 }
 
-func (s *BookService) UpdateBook(bookId string, book domain.Book) *domain.DomainError {
+func (s *BookService) UpdateBook(ctx context.Context, bookId string, book domain.Book) *domain.DomainError {
 
 	book.Id = bookId
 	if err := book.Validate(); err != nil {
@@ -70,7 +72,7 @@ func (s *BookService) UpdateBook(bookId string, book domain.Book) *domain.Domain
 		}
 	}
 
-	err := s.repo.Update(book)
+	err := s.repo.Update(ctx, book)
 	if err != nil {
 		s.log.Error("Failed to update book: ", err)
 		return &domain.DomainError{
@@ -83,7 +85,6 @@ func (s *BookService) UpdateBook(bookId string, book domain.Book) *domain.Domain
 }
 
 func (s *BookService) ListAll(ctx context.Context) ([]domain.Book, *domain.DomainError) {
-
 	books, err := s.repo.ListAll(ctx)
 	if err != nil {
 		s.log.Error("Failed to list all books: ", err)

@@ -12,9 +12,9 @@ type Server struct {
 	Service *services.BookService
 }
 
-func (s Server) GetBook(_ context.Context, req *pb.GetBookRequest) (*pb.GetBookResponse, error) {
+func (s Server) GetBook(ctx context.Context, req *pb.GetBookRequest) (*pb.GetBookResponse, error) {
 
-	book, serviceErr := s.Service.FindById(req.Id)
+	book, serviceErr := s.Service.FindById(ctx, req.Id)
 	if serviceErr.Error != nil {
 		return &pb.GetBookResponse{}, serviceErr.Error
 	}

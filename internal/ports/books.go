@@ -6,9 +6,9 @@ import (
 )
 
 type BookServiceInterface interface {
-	FindById(bookId string) (domain.Book, *domain.DomainError)
-	CreateBook(book domain.Book) *domain.DomainError
-	UpdateBook(bookId string, book domain.Book) *domain.DomainError
+	FindById(ctx context.Context, bookId string) (domain.Book, *domain.DomainError)
+	CreateBook(ctx context.Context, book domain.Book) *domain.DomainError
+	UpdateBook(ctx context.Context, bookId string, book domain.Book) *domain.DomainError
 	ListAll(ctx context.Context) ([]domain.Book, *domain.DomainError)
 }
 

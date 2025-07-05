@@ -40,7 +40,7 @@ func (b BookHandlers) CreateBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := b.service.CreateBook(book); err != nil {
+	if err := b.service.CreateBook(r.Context(), book); err != nil {
 		b.log.Error("Error creating book: ", err.Error.Error())
 		httputils.HandleError(w, *err)
 		return
@@ -65,7 +65,7 @@ func (b BookHandlers) GetBookById(w http.ResponseWriter, r *http.Request) {
 	b.log.Info("GetBookById called")
 
 	id := r.URL.Query().Get("id")
-	book, err := b.service.FindById(id)
+	book, err := b.service.FindById(r.Context(), id)
 	if err != nil {
 		b.log.Error("Error getting book by ID: ", err.Error)
 		httputils.HandleError(w, *err)
@@ -91,7 +91,7 @@ func (b BookHandlers) UpdateBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if bookError := b.service.UpdateBook(id, book); bookError != nil {
+	if bookError := b.service.UpdateBook(r.Context(), id, book); bookError != nil {
 		b.log.Error("Error updating book: ", bookError.Error.Error())
 		httputils.HandleError(w, *bookError)
 		return

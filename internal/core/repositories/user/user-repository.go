@@ -3,6 +3,7 @@ package userrepository
 import (
 	"books/internal/core/domain"
 	"books/internal/core/repositories/cache"
+	"context"
 
 	"gorm.io/gorm"
 )
@@ -28,6 +29,6 @@ func (s *UserRepositoryImpl) Save(user domain.User) error {
 	if err := s.db.Create(user).Error; err != nil {
 		return err
 	}
-	_ = s.cache.Set(user.Id, user)
+	_ = s.cache.Set(context.Background(), user.Id, user) //@TODO AJUSTAR CONTEXT
 	return nil
 }

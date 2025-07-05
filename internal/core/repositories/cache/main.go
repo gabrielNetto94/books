@@ -1,7 +1,9 @@
 package cache
 
+import "context"
+
 type CacheRepositoryInterface interface {
-	Get(key string, obj any) error
-	Set(key string, value any) error
-	Del(key string) error
+	Get(ctx context.Context, key string, obj any) error
+	Set(ctx context.Context, key string, value any) error
+	Del(ctx context.Context, key string) error
 }
