@@ -49,8 +49,6 @@ func connectCache(url string) *redis.Client {
 func (c CacheRepository) Get(ctx context.Context, key string, obj any) error {
 
 	val, err := c.cache.Get(ctx, key).Result()
-
-	fmt.Println("val ->", val)
 	if err != nil {
 		if err == redis.Nil {
 			return errors.New("key does not exist")

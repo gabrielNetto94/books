@@ -3,19 +3,18 @@ package bookrepository
 import (
 	"books/internal/core/domain"
 	"books/internal/core/repositories/cache"
+	"books/internal/core/repositories/db"
 	"context"
 	"encoding/json"
 	"fmt"
-
-	"gorm.io/gorm"
 )
 
 type UserRepositoryImpl struct {
-	db    *gorm.DB
+	db    db.DatabaseRepositoryInterface
 	cache cache.CacheRepositoryInterface
 }
 
-func NewBookRepository(db *gorm.DB, cache cache.CacheRepositoryInterface) *UserRepositoryImpl {
+func NewBookRepository(db db.DatabaseRepositoryInterface, cache cache.CacheRepositoryInterface) *UserRepositoryImpl {
 	return &UserRepositoryImpl{db, cache}
 }
 
@@ -28,7 +27,7 @@ type BookRepository interface {
 
 func (s *UserRepositoryImpl) Save(ctx context.Context, book domain.Book) error {
 
-	if err := s.db.Create(book).Error; err != nil {
+	if err := s.db.Create(ctx, book); err != nil {
 		return err
 	}
 	_ = s.cache.Set(ctx, book.Id, book)
@@ -37,13 +36,14 @@ func (s *UserRepositoryImpl) Save(ctx context.Context, book domain.Book) error {
 
 func (s *UserRepositoryImpl) Update(ctx context.Context, book domain.Book) error {
 
-	err := s.db.Save(book).Error
-	if err == nil {
-		_ = s.cache.Del(ctx, book.Id)
-		return nil
-	}
+	// err := s.db.Save(book).Error
+	// if err == nil {
+	// 	_ = s.cache.Del(ctx, book.Id)
+	// 	return nil
+	// }
 
-	return err
+	// return err
+	return fmt.Errorf("not implemented")
 }
 
 func (s *UserRepositoryImpl) FindById(ctx context.Context, id string) (domain.Book, error) {
@@ -52,9 +52,8 @@ func (s *UserRepositoryImpl) FindById(ctx context.Context, id string) (domain.Bo
 		return book, nil
 	}
 
-	resp := s.db.WithContext(ctx).Find(&book)
-	if resp.RowsAffected == 0 {
-		return domain.Book{}, fmt.Errorf("book not found")
+	if err := s.db.Find(ctx, &book); err != nil {
+		return book, err
 	}
 
 	bookBytes, err := json.Marshal(book)
@@ -62,12 +61,13 @@ func (s *UserRepositoryImpl) FindById(ctx context.Context, id string) (domain.Bo
 		_ = s.cache.Set(ctx, book.Id, bookBytes)
 	}
 
-	return book, resp.Error
+	return book, nil
 }
 
 func (s *UserRepositoryImpl) ListAll(ctx context.Context) ([]domain.Book, error) {
 
-	var books []domain.Book
+	// var books []domain.Book
 
-	return books, s.db.WithContext(ctx).Find(&books).Error
+	// return books, s.db.WithContext(ctx).Find(&books).Error
+	return nil, fmt.Errorf("not implemented")
 }

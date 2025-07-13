@@ -23,6 +23,7 @@ func NewBookService(repo bookrepository.BookRepository, log log.Logger, tracer o
 }
 
 func (s *BookService) FindById(ctx context.Context, bookId string) (domain.Book, *domain.DomainError) {
+	s.log.Info("Finding book by ID: ", bookId)
 	book, err := s.repo.FindById(ctx, bookId)
 	if err != nil {
 		s.log.Error("Failed to find book by ID: ", err)

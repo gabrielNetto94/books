@@ -18,8 +18,6 @@ import (
 	"books/pkg/env"
 	"books/pkg/observability/opentelemetry"
 
-	gormm "gorm.io/gorm"
-
 	"go.opentelemetry.io/otel/sdk/resource"
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 )
@@ -60,7 +58,7 @@ func main() {
 
 	opentelemetry := opentelemetry.NewObservability(serviceName.Value.AsString())
 
-	bookRepo := bookrepository.NewBookRepository(&gormm.DB{}, cache) //@todo fix dependency injection
+	bookRepo := bookrepository.NewBookRepository(db, cache)
 	service := services.NewBookService(bookRepo, log, opentelemetry)
 	bookHandler := bookhandler.NewBookHandlers(service, log)
 
