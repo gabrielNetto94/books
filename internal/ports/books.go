@@ -13,5 +13,5 @@ type BookServiceInterface interface {
 }
 
 type UserServiceInterface interface {
-	CreateUser(user domain.User) (string, *domain.DomainError)
+	CreateUser(ctx context.Context, user domain.User) (string, *domain.DomainError)
 }

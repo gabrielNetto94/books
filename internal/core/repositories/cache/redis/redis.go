@@ -18,10 +18,12 @@ type CacheRepository struct {
 	cache *redis.Client
 }
 
-func NewCacheInstance(cache *redis.Client) cache.CacheRepositoryInterface {
-	return &CacheRepository{cache}
+func NewCacheInstance(dsn string) cache.CacheRepositoryInterface {
+
+	redisClient := connectCache(dsn)
+	return &CacheRepository{redisClient}
 }
-func ConnectCache(url string) *CacheRepository {
+func connectCache(url string) *redis.Client {
 
 	opt, err := redis.ParseURL(url)
 	if err != nil {
@@ -41,7 +43,7 @@ func ConnectCache(url string) *CacheRepository {
 		log.Fatal("Error init cache", status.Err().Error())
 		//logger.Log.Fatal("Error init cache", status.Err().Error())
 	}
-	return &CacheRepository{rdb}
+	return rdb
 }
 
 func (c CacheRepository) Get(ctx context.Context, key string, obj any) error {

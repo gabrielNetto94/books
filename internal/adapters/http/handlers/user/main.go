@@ -37,7 +37,7 @@ func (u UserHandlers) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userId, err := u.service.CreateUser(user)
+	userId, err := u.service.CreateUser(r.Context(), user)
 	if err != nil {
 		u.log.Error("Error creating user: ", err.Error.Error())
 		httputils.HandleError(w, *err)

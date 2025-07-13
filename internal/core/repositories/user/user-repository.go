@@ -3,30 +3,29 @@ package userrepository
 import (
 	"books/internal/core/domain"
 	"books/internal/core/repositories/cache"
+	"books/internal/core/repositories/db"
 	"context"
-
-	"gorm.io/gorm"
 )
 
 type UserRepositoryImpl struct {
-	db    *gorm.DB
+	db    db.DatabaseRepositoryInterface
 	cache cache.CacheRepositoryInterface
 }
 
-func NewUserRepository(db *gorm.DB, cache cache.CacheRepositoryInterface) *UserRepositoryImpl {
+func NewUserRepository(db db.DatabaseRepositoryInterface, cache cache.CacheRepositoryInterface) *UserRepositoryImpl {
 	return &UserRepositoryImpl{db, cache}
 }
 
 type UserRepository interface {
-	Save(user domain.User) error
+	Save(ctx context.Context, user domain.User) error
 	// FindById(id string) (domain.User, error)
 	// ListAll() ([]domain.User, error)
 	// Update(user domain.User) error
 }
 
-func (s *UserRepositoryImpl) Save(user domain.User) error {
+func (s *UserRepositoryImpl) Save(ctx context.Context, user domain.User) error {
 
-	if err := s.db.Create(user).Error; err != nil {
+	if err := s.db.Create(ctx, user); err != nil {
 		return err
 	}
 	_ = s.cache.Set(context.Background(), user.Id, user) //@TODO AJUSTAR CONTEXT

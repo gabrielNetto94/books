@@ -12,11 +12,13 @@ import (
 
 	bookrepository "books/internal/core/repositories/book"
 	cache "books/internal/core/repositories/cache/redis"
-	"books/internal/core/repositories/db"
+	"books/internal/core/repositories/db/gorm"
 	userrepository "books/internal/core/repositories/user"
 	"books/internal/core/services"
 	"books/pkg/env"
 	"books/pkg/observability/opentelemetry"
+
+	gormm "gorm.io/gorm"
 
 	"go.opentelemetry.io/otel/sdk/resource"
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
@@ -29,8 +31,8 @@ var serviceName = semconv.ServiceNameKey.String("asdf-test")
 
 func main() {
 
-	db := db.ConnectDatabase("postgres://postgres:password@db:5432")
-	cache := cache.ConnectCache("redis://cache:6379")
+	db := gorm.NewDatabaseRepository("postgres://postgres:password@db:5432")
+	cache := cache.NewCacheInstance("redis://cache:6379")
 
 	log := setupLogger()
 
@@ -58,7 +60,7 @@ func main() {
 
 	opentelemetry := opentelemetry.NewObservability(serviceName.Value.AsString())
 
-	bookRepo := bookrepository.NewBookRepository(db, cache)
+	bookRepo := bookrepository.NewBookRepository(&gormm.DB{}, cache) //@todo fix dependency injection
 	service := services.NewBookService(bookRepo, log, opentelemetry)
 	bookHandler := bookhandler.NewBookHandlers(service, log)
 
