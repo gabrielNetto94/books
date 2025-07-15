@@ -1,0 +1,8 @@
+{
+    "release": {
+        "branches": [
+            "main",
+            "release"
+        ]
+    }
+}
