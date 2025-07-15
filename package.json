@@ -1,9 +1,0 @@
-{
-    "name": "books",
-    "release": {
-        "branches": [
-            "main",
-            "release"
-        ]
-    }
-}
