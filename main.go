@@ -22,8 +22,8 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 )
 
-const REST_API_PORT = ":3005"
 const GRPC_SERVER_PORT = ":3001"
+const REST_API_PORT = ":3005"
 
 var serviceName = semconv.ServiceNameKey.String("asdf-test")
 
