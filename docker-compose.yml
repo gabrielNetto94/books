@@ -9,8 +9,8 @@ services:
         volumes:
             - ./:/app
         ports:
-            - "3000:3000" #http port
-            - "3001:3001" #grpc port
+            - "3005:3000" #http port
+            # - "3001:3001" #grpc port
         depends_on:
             - db
             - cache
