@@ -3,6 +3,9 @@ package routes
 import (
 	bookhandler "books/internal/adapters/http/handlers/books"
 	userhandler "books/internal/adapters/http/handlers/user"
+	"books/pkg/observability/metrics"
+	"books/pkg/observability/metrics/prometheus"
+	"log"
 
 	"github.com/gin-gonic/gin"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
@@ -13,6 +16,15 @@ func InitRouter(bookHandler bookhandler.BookHTTPHandler, userHandler userhandler
 
 	r := gin.Default()
 	r.Use(otelgin.Middleware("asdf-test"))
+
+	collector := prometheus.NewPrometheusCollector()
+	appMetrics, err := metrics.NewAppMetrics(collector)
+	if err != nil {
+		log.Fatal("Failed to create app metrics: ", err.Error())
+	}
+	r.Use(prometheus.MetricsMiddleware(appMetrics))
+
+	r.GET("/metrics", gin.WrapH(collector.Handler()))
 	// Health check
 	r.GET("/ping", healthCheckHandler)
 
