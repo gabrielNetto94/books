@@ -86,6 +86,7 @@ func (s *BookService) UpdateBook(ctx context.Context, bookId string, book domain
 }
 
 func (s *BookService) ListAll(ctx context.Context) ([]domain.Book, *domain.DomainError) {
+	s.log.Info("[SERVICE] Listing all books")
 	books, err := s.repo.ListAll(ctx)
 	if err != nil {
 		s.log.Error("Failed to list all books: ", err)

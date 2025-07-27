@@ -65,9 +65,6 @@ func (s *UserRepositoryImpl) FindById(ctx context.Context, id string) (domain.Bo
 }
 
 func (s *UserRepositoryImpl) ListAll(ctx context.Context) ([]domain.Book, error) {
-
-	// var books []domain.Book
-
-	// return books, s.db.WithContext(ctx).Find(&books).Error
-	return nil, fmt.Errorf("not implemented")
+	var books []domain.Book
+	return books, s.db.Find(ctx, &books)
 }

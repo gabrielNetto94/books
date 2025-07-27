@@ -65,7 +65,11 @@ func (d *DatabaseRepositoryImpl) Create(ctx context.Context, data any) error {
 
 func (d *DatabaseRepositoryImpl) Find(ctx context.Context, data any) error {
 
-	resp := d.db.WithContext(ctx).Find(&data)
+	resp := d.db.WithContext(ctx).Find(data)
+	if resp.Error != nil {
+		return resp.Error
+	}
+
 	if resp.RowsAffected == 0 {
 		return fmt.Errorf("data not found")
 	}
