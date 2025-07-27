@@ -51,7 +51,8 @@ services:
         ports:
             - "3000:3000"
         volumes:
-            - ./pkg/observability/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+            - ./pkg/observability/grafana/provisioning:/etc/grafana/provisioning
+            - ./pkg/observability/grafana/dashboards:/etc/grafana/dashboards
         depends_on:
             - prometheus
 

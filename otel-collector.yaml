@@ -2,32 +2,34 @@
 # SPDX-License-Identifier: Apache-2.0
 
 receivers:
-  otlp:
-    protocols:
-      grpc:
-        endpoint: 0.0.0.0:4317
+    otlp:
+        protocols:
+            grpc:
+                endpoint: 0.0.0.0:4317
+
 processors:
 extensions:
-  health_check: {}
+    health_check: {}
+
 exporters:
-  otlp:
-    endpoint: jaeger:4317
-    tls:
-      insecure: true
-  prometheus:
-    endpoint: 0.0.0.0:9090
-    namespace: testapp
-  debug:
+    otlp:
+        endpoint: jaeger:4317
+        tls:
+            insecure: true
+    prometheus:
+        endpoint: 0.0.0.0:9090
+        namespace: testapp
+    debug:
 
 service:
-  extensions: [health_check]
-  pipelines:
-    traces:
-      receivers: [otlp]
-      processors: []
-      exporters: [otlp, debug]
+    extensions: [health_check]
+    pipelines:
+        traces:
+            receivers: [otlp]
+            processors: []
+            exporters: [otlp, debug]
 
-    metrics:
-      receivers: [otlp]
-      processors: []
-      exporters: [prometheus, debug]
+        metrics:
+            receivers: [otlp]
+            processors: []
+            exporters: [prometheus, debug]
