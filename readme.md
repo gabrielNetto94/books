@@ -36,6 +36,8 @@ docker compose up
 ```
 
 -   **Application** will be available at `http://localhost:3005`.
+-   **Healthcheck** will be available at `http://localhost:3005/ping`.
+-   **Jaeger** will be available at `http://localhost:16686`.
 -   **Prometheus** will be available at `http://localhost:9090`.
 -   **Grafana** will be available at `http://localhost:3000`. The dashboard is automatically provisioned.
 
@@ -46,3 +48,4 @@ docker compose up
 - [ ] Add Swagger/OpenAPI
 - [ ] Finish gRPC implementation (currently unavailable)
 - [ ] Remove DB and cache from the core and move them to adapters to follow Hexagonal Architecture
+- [ ] Add rate limit
