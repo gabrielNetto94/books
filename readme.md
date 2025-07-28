@@ -42,6 +42,7 @@ docker compose up
 -   **Grafana** will be available at `http://localhost:3000`. The dashboard is automatically provisioned.
 
 ## 📋 To Do
+- [x] Continuous integration with test and build verification
 - [ ] Fix the update book feature
 - [ ] Fix the list all books feature
 - [ ] Send metrics to OpenTelemetry instead of Prometheus
