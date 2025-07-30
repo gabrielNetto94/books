@@ -13,14 +13,12 @@ import (
 	"books/internal/infra/log"
 	"books/internal/infra/log/logrus"
 	"books/pkg/env"
+	"books/pkg/observability"
 	"books/pkg/observability/opentelemetry"
 	"context"
 	"os"
 	"os/signal"
 
-	// 1. Import your new metrics library
-
-	// Assuming you use Gin
 	"go.opentelemetry.io/otel/sdk/resource"
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 )
@@ -28,7 +26,7 @@ import (
 const REST_API_PORT = ":3005"
 const GRPC_SERVER_PORT = ":3001"
 
-var serviceName = semconv.ServiceNameKey.String("asdf-test")
+var serviceName = semconv.ServiceNameKey.String("books-api")
 
 func main() {
 	log := setupLogger()
@@ -38,14 +36,14 @@ func main() {
 
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer cancel()
-	conn, err := opentelemetry.InitConn()
+	conn, err := opentelemetry.InitConn("otel-collector:4317")
 	if err != nil {
 		log.Fatal("Error creating gRPC connection: ", err.Error())
 	}
 
 	res, err := resource.New(ctx, resource.WithAttributes(serviceName))
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Error creating resource: ", err.Error())
 	}
 
 	shutdownTracerProvider, err := opentelemetry.InitTracerProvider(ctx, res, conn)
@@ -58,14 +56,14 @@ func main() {
 		}
 	}()
 
-	opentelemetry := opentelemetry.NewObservability(serviceName.Value.AsString())
+	tracer := observability.NewTracer("books-api")
 
 	bookRepo := bookrepository.NewBookRepository(db, cacheRepo)
-	service := services.NewBookService(bookRepo, log, opentelemetry)
-	bookHandler := bookhandler.NewBookHandlers(service, log)
+	service := services.NewBookService(bookRepo, log)
+	bookHandler := bookhandler.NewBookHandlers(service, log, tracer)
 
 	userRepo := userrepository.NewUserRepository(db, cacheRepo)
-	userService := services.NewUserService(userRepo, log)
+	userService := services.NewUserService(userRepo, log, tracer)
 	userHandler := userhandler.NewUserHandlers(userService, log)
 
 	router := routes.InitRouter(bookHandler, userHandler)

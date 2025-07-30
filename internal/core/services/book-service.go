@@ -6,20 +6,18 @@ import (
 	bookrepository "books/internal/core/repositories/book"
 	"books/internal/infra/log"
 	"books/internal/ports"
-	"books/pkg/observability"
 	"context"
 
 	"github.com/google/uuid"
 )
 
 type BookService struct {
-	repo   bookrepository.BookRepository
-	log    log.Logger
-	tracer observability.Observability
+	repo bookrepository.BookRepository
+	log  log.Logger
 }
 
-func NewBookService(repo bookrepository.BookRepository, log log.Logger, tracer observability.Observability) ports.BookServiceInterface {
-	return &BookService{repo, log, tracer}
+func NewBookService(repo bookrepository.BookRepository, log log.Logger) ports.BookServiceInterface {
+	return &BookService{repo, log}
 }
 
 func (s *BookService) FindById(ctx context.Context, bookId string) (domain.Book, *domain.DomainError) {
