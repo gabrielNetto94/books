@@ -47,6 +47,7 @@ func connectCache(url string) *redis.Client {
 	return rdb
 }
 
+// @todo refactor to return other types instead only struct
 func (c CacheRepository) Get(ctx context.Context, key string, obj any) error {
 
 	val, err := c.cache.Get(ctx, key).Result()
