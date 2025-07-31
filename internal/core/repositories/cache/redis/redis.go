@@ -4,6 +4,7 @@ import (
 	"books/internal/core/repositories/cache"
 	"fmt"
 	"log"
+	"reflect"
 
 	"context"
 	"encoding/json"
@@ -60,8 +61,23 @@ func (c CacheRepository) Get(ctx context.Context, key string, obj any) error {
 }
 
 func (c CacheRepository) Set(ctx context.Context, key string, value any) error {
+
+	v := reflect.ValueOf(value)
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+	}
+
+	if v.Kind() == reflect.Struct {
+		data, err := json.Marshal(value)
+		if err != nil {
+			return err
+		}
+		return c.cache.Set(ctx, key, data, 0).Err()
+	}
+
 	return c.cache.Set(ctx, key, value, 0).Err()
 }
+
 func (c CacheRepository) Del(ctx context.Context, key string) error {
 	return c.cache.Del(ctx, key).Err()
 }

@@ -31,12 +31,7 @@ func (s *UserRepositoryImpl) Save(ctx context.Context, book domain.Book) error {
 		return err
 	}
 
-	data, err := json.Marshal(book)
-	if err != nil {
-		return err
-	}
-
-	return s.cache.Set(ctx, book.Id, data)
+	return s.cache.Set(ctx, book.Id, book)
 }
 
 func (s *UserRepositoryImpl) Update(ctx context.Context, book domain.Book) error {
