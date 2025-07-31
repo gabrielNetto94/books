@@ -13,7 +13,6 @@ import (
 	"books/internal/infra/log"
 	"books/internal/infra/log/logrus"
 	"books/pkg/env"
-	"books/pkg/observability"
 	"books/pkg/observability/opentelemetry"
 	"context"
 	"os"
@@ -56,7 +55,7 @@ func main() {
 		}
 	}()
 
-	tracer := observability.NewTracer("books-api")
+	tracer := opentelemetry.NewOtelTracer("books-api")
 
 	bookRepo := bookrepository.NewBookRepository(db, cacheRepo)
 	service := services.NewBookService(bookRepo, log)
@@ -72,8 +71,6 @@ func main() {
 		log.Fatal("Error running server: ", err.Error())
 	}
 }
-
-// metricsMiddleware creates a gin.HandlerFunc to collect standard HTTP metrics.
 
 func setupLogger() log.Logger {
 	logrusLog := logrus.NewLogrusAdapter()
