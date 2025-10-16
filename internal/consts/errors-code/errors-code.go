@@ -9,6 +9,7 @@ const (
 	ErrInvalidInput  ErrorCode = "INVALID_INPUT"
 	ErrUnauthorized  ErrorCode = "UNAUTHORIZED"
 	ErrInternalError ErrorCode = "INTERNAL_ERROR"
+	ErrConflict      ErrorCode = "CONFLICT"
 )
 
 func (err ErrorCode) String() string {
@@ -20,6 +21,7 @@ var errorCodeToHttpStatus = map[ErrorCode]int{
 	ErrInvalidInput:  http.StatusBadRequest,          // 400 Bad Request
 	ErrUnauthorized:  http.StatusUnauthorized,        // 401 Unauthorized
 	ErrInternalError: http.StatusInternalServerError, // 500 Internal Server Error
+	ErrConflict:      http.StatusConflict,            // 409 Conflict
 }
 
 func (err ErrorCode) ToHttpStatus() int {
