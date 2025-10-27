@@ -9,18 +9,20 @@ import (
 	"books/internal/infra/log"
 	"books/internal/ports"
 	"books/pkg/observability"
+	"books/pkg/storage"
 
 	"github.com/google/uuid"
 )
 
 type UserService struct {
-	repo   userrepository.UserRepository
-	log    log.Logger
-	tracer observability.Tracer
+	repo    userrepository.UserRepository
+	log     log.Logger
+	tracer  observability.Tracer
+	storage storage.Storage
 }
 
-func NewUserService(repo userrepository.UserRepository, log log.Logger, tracer observability.Tracer) ports.UserServiceInterface {
-	return &UserService{repo, log, tracer}
+func NewUserService(repo userrepository.UserRepository, log log.Logger, tracer observability.Tracer, storage storage.Storage) ports.UserServiceInterface {
+	return &UserService{repo, log, tracer, storage}
 }
 
 func (s *UserService) CreateUser(ctx context.Context, user domain.User) (string, *domain.DomainError) {

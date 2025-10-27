@@ -65,6 +65,25 @@ services:
       - ./pkg/observability/grafana/dashboards:/etc/grafana/dashboards
     depends_on:
       - prometheus
+
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: password123
+    volumes:
+      - ./dev/storage:/data
+    expose:
+      - "9000"
+      - "9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    depends_on:
+      - api-books
+
   cache:
     image: redis:latest
     expose:

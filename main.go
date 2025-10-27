@@ -14,6 +14,7 @@ import (
 	"books/internal/infra/log/logrus"
 	"books/pkg/env"
 	"books/pkg/observability/opentelemetry"
+	"books/pkg/storage/s3"
 	"context"
 	"os"
 	"os/signal"
@@ -55,6 +56,11 @@ func main() {
 		}
 	}()
 
+	s3Storage, err := s3.New(ctx, s3.S3Config{Endpoint: "minio:9000", Bucket: "books"})
+	if err != nil {
+		log.Fatal("Error creating s3 storage: ", err.Error())
+	}
+
 	tracer := opentelemetry.NewOtelTracer("books-api")
 
 	bookRepo := bookrepository.NewBookRepository(db, cacheRepo)
@@ -62,7 +68,7 @@ func main() {
 	bookHandler := bookhandler.NewBookHandlers(service, log, tracer)
 
 	userRepo := userrepository.NewUserRepository(db, cacheRepo)
-	userService := services.NewUserService(userRepo, log, tracer)
+	userService := services.NewUserService(userRepo, log, tracer, s3Storage)
 	userHandler := userhandler.NewUserHandlers(userService, log)
 
 	router := routes.InitRouter(bookHandler, userHandler)
